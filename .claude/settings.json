@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(MSYS_NO_PATHCONV=1 curl -s -o /dev/null -w \"HTTP %{http_code}\\\\n\" \"http://localhost:3000/p/d5042365-4c36-40fc-8660-12f8d8d82508\")",
+      "Bash(MSYS_NO_PATHCONV=1 curl -s -o /dev/null -w \"HTTP %{http_code}\\\\n\" http://localhost:3000/search)",
+      "Bash(node --experimental-require-module -e ' *)",
+      "Bash(MSYS_NO_PATHCONV=1 curl -s http://localhost:3000/)",
+      "Bash(MSYS_NO_PATHCONV=1 curl -s -o /dev/null -w \"/ -> %{http_code}\\\\n\" http://localhost:3000/)",
+      "Bash(MSYS_NO_PATHCONV=1 curl -s -o /dev/null -w \"/bookmarks -> %{http_code}\\\\n\" http://localhost:3000/bookmarks)",
+      "Bash(MSYS_NO_PATHCONV=1 curl -s http://localhost:3000/bookmarks)",
+      "Bash(node -e \"let d=''; process.stdin.on\\('data',c=>d+=c\\); process.stdin.on\\('end',\\(\\)=>{const o=JSON.parse\\(d\\); console.log\\(JSON.stringify\\(o.data[0], null, 2\\)\\);}\\)\")",
+      "Bash(node -e \"let d=''; process.stdin.on\\('data',c=>d+=c\\); process.stdin.on\\('end',\\(\\)=>{const o=JSON.parse\\(d\\); console.log\\(JSON.stringify\\(o.data, null, 2\\)\\);}\\)\")"
+    ]
+  }
+}

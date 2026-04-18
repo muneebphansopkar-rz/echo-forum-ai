@@ -1,0 +1,95 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+ * Design tokens — ported from html/skep-forum-updated.html.
+ * All values are HSL triples so Tailwind's `hsl(var(--x))` pattern works.
+ * Raw hex references in components are forbidden; always read a token here.
+ */
+@layer base {
+  :root {
+    /* Core shadcn tokens (kept for compatibility with existing ui/* primitives) */
+    --background: 0 0% 100%;
+    --foreground: 220 39% 11%;
+    --card: 0 0% 100%;
+    --card-foreground: 220 39% 11%;
+    --primary: 223 90% 60%; /* blue #3b6ef5 */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 225 27% 96%;
+    --secondary-foreground: 220 39% 11%;
+    --muted: 225 27% 96%;
+    --muted-foreground: 220 9% 46%;
+    --accent: 223 94% 95%; /* blue-light */
+    --accent-foreground: 223 90% 60%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 225 24% 92%;
+    --input: 225 24% 92%;
+    --ring: 223 90% 60%;
+    --radius: 0.625rem; /* 10px — matches --radius-md */
+
+    /* SKEP Forum brand + semantic tokens */
+    --skep-navy: 225 24% 14%; /* #1a1f2e */
+    --skep-navy-hover: 224 22% 19%; /* #252b3b */
+    --skep-blue: 223 90% 60%; /* #3b6ef5 */
+    --skep-blue-light: 223 94% 95%; /* #e8effe */
+    --skep-blue-mid: 221 93% 86%; /* #b8ccfc */
+    --skep-page-bg: 226 24% 96%; /* #f3f4f8 */
+    --skep-sidebar-bg: 0 0% 100%;
+    --skep-card-bg: 0 0% 100%;
+    --skep-border: 223 22% 92%; /* #e5e7ef */
+    --skep-border-light: 225 24% 95%; /* #eef0f6 */
+    --skep-text-primary: 220 39% 11%; /* #111827 */
+    --skep-text-secondary: 220 9% 46%; /* #6b7280 */
+    --skep-text-muted: 220 9% 65%; /* #9ca3af */
+
+    /* Tag palette (each has a base + light variant used on badges) */
+    --skep-green: 160 84% 39%;
+    --skep-green-light: 150 84% 95%;
+    --skep-amber: 38 92% 50%;
+    --skep-amber-light: 48 100% 96%;
+    --skep-red: 0 84% 60%;
+    --skep-red-light: 0 86% 97%;
+    --skep-purple: 258 90% 66%;
+    --skep-purple-light: 252 100% 97%;
+    --skep-pink: 330 81% 60%;
+    --skep-pink-light: 327 73% 97%;
+    --skep-teal: 173 80% 40%;
+    --skep-teal-light: 166 76% 97%;
+
+    /* Explicit radii to mirror source (6 / 10 / 14 / 18) */
+    --skep-radius-sm: 6px;
+    --skep-radius-md: 10px;
+    --skep-radius-lg: 14px;
+    --skep-radius-xl: 18px;
+
+    /* Shadows */
+    --skep-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+    --skep-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: 'rlig' 1, 'calt' 1;
+  }
+}
+
+/* Small reusable surface patterns — kept at base layer so components stay token-only. */
+@layer components {
+  .skep-surface {
+    background: hsl(var(--skep-card-bg));
+    border: 1px solid hsl(var(--skep-border));
+    border-radius: var(--skep-radius-lg);
+    box-shadow: var(--skep-shadow-sm);
+  }
+  .skep-surface-soft {
+    background: hsl(var(--skep-card-bg));
+    border: 1px solid hsl(var(--skep-border-light));
+    border-radius: var(--skep-radius-md);
+  }
+}

@@ -1,0 +1,1971 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SKEP Forum — Indie Founders</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navy: #1a1f2e;
+    --navy-hover: #252b3b;
+    --blue: #3b6ef5;
+    --blue-light: #e8effe;
+    --blue-mid: #b8ccfc;
+    --page-bg: #f3f4f8;
+    --sidebar-bg: #ffffff;
+    --card-bg: #ffffff;
+    --border: #e5e7ef;
+    --border-light: #eef0f6;
+    --text-primary: #111827;
+    --text-secondary: #6b7280;
+    --text-muted: #9ca3af;
+    --text-blue: #3b6ef5;
+    --green: #10b981;
+    --green-light: #ecfdf5;
+    --amber: #f59e0b;
+    --amber-light: #fffbeb;
+    --red: #ef4444;
+    --red-light: #fef2f2;
+    --purple: #8b5cf6;
+    --purple-light: #f5f3ff;
+    --pink: #ec4899;
+    --pink-light: #fdf2f8;
+    --teal: #14b8a6;
+    --teal-light: #f0fdfa;
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 14px;
+    --radius-xl: 18px;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+    --font: 'Inter', -apple-system, sans-serif;
+  }
+
+  html, body { height: 100%; font-family: var(--font); font-size: 14px; color: var(--text-primary); background: var(--page-bg); }
+  body { overflow: hidden; }
+  body.focus-mode { background: #fff; }
+  body.focus-mode .topbar { display: none; }
+
+  /* ─── LAYOUT ─── */
+  .app {
+    display: flex;
+    width: 100%;
+    height: 100vh;
+    padding-top: 48px;
+    overflow: hidden;
+  }
+  body.focus-mode .app { padding-top: 0; }
+
+  /* ─── TOPBAR (dark navy strip) ─── */
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0; height: 48px; z-index: 100;
+    background: var(--navy); display: flex; align-items: center; padding: 0 16px; gap: 12px;
+  }
+  .topbar-brand { display: flex; align-items: center; gap: 10px; }
+  .brand-avatar {
+    width: 30px; height: 30px; border-radius: 8px; background: #3b6ef5;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; color: #fff; flex-shrink: 0;
+  }
+  .brand-name { font-size: 14px; font-weight: 600; color: #fff; }
+  .brand-chevron { color: #6b7280; font-size: 12px; margin-left: 2px; }
+  .topbar-sep { width: 1px; height: 20px; background: #374151; }
+
+  /* ─── SIDEBAR ─── */
+  .sidebar {
+    width: 248px; flex-shrink: 0; background: var(--sidebar-bg);
+    border-right: 1px solid var(--border);
+    display: flex; flex-direction: column; height: calc(100vh - 48px);
+    overflow-y: auto; position: fixed; left: 0; top: 48px;
+  }
+  .sidebar::-webkit-scrollbar { width: 0; }
+  .sidebar-inner { flex: 1; padding: 12px 0; }
+  .sidebar-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 16px; font-size: 13.5px; color: var(--text-secondary);
+    cursor: pointer; border-radius: 0; transition: background .15s; user-select: none;
+  }
+  .sidebar-item:hover { background: var(--page-bg); }
+  .sidebar-item.active { background: var(--blue-light); color: var(--blue); font-weight: 500; }
+  .sidebar-item svg { flex-shrink: 0; opacity: .7; }
+  .sidebar-item.active svg { opacity: 1; }
+  .sidebar-item-dots { margin-left: auto; color: var(--text-muted); font-size: 16px; }
+  .sidebar-group { margin-top: 4px; }
+  .sidebar-group-header {
+    display: flex; align-items: center; gap: 10px; padding: 8px 16px;
+    font-size: 13.5px; color: var(--text-primary); font-weight: 500; cursor: pointer;
+  }
+  .sidebar-group-header:hover { background: var(--page-bg); }
+  .sidebar-group-header .chev { margin-left: auto; transition: transform .2s; }
+  .sidebar-group-header.open .chev { transform: rotate(180deg); }
+  .sidebar-child {
+    display: flex; align-items: center; gap: 10px; padding: 7px 16px 7px 40px;
+    font-size: 13px; color: var(--text-secondary); cursor: pointer;
+  }
+  .sidebar-child:hover { background: var(--page-bg); }
+  .sidebar-child.active { color: var(--blue); font-weight: 500; background: var(--blue-light); }
+  .sidebar-divider { border: none; border-top: 1px solid var(--border-light); margin: 8px 0; }
+  .sidebar-footer { padding: 12px 16px; border-top: 1px solid var(--border-light); }
+  .sidebar-user { display: flex; align-items: center; gap: 10px; padding: 6px 0; cursor: pointer; }
+  .sidebar-settings { display: flex; align-items: center; gap: 10px; padding: 8px 0; font-size: 13px; color: var(--text-secondary); cursor: pointer; }
+  .user-avatar {
+    width: 30px; height: 30px; border-radius: 50%; background: #dbeafe;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 600; color: var(--blue); flex-shrink: 0;
+  }
+  .user-name { font-size: 13px; font-weight: 500; }
+  .user-dots { margin-left: auto; color: var(--text-muted); }
+
+  /* ─── MAIN CONTENT ─── */
+  .main {
+    margin-left: 248px;
+    flex: 1;
+    min-width: 0;
+    height: calc(100vh - 48px);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  body.focus-mode .main { margin-left: 0; height: 100vh; }
+  body.focus-mode .sidebar { display: none; }
+  .screen { display: none; flex: 1; min-height: 0; }
+  .screen.active { display: flex; flex-direction: column; min-height: 0; }
+  .screen.full-view { width: 100%; min-height: 100vh; background: #fff; }
+
+  /* ─── CONTENT HEADER ─── */
+  .content-header {
+    position: sticky; top: 0; z-index: 40;
+    background: #fff; border-bottom: 1px solid var(--border);
+    padding: 0 24px; height: 56px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;
+  }
+  .content-header-title { font-size: 17px; font-weight: 600; }
+  .content-header-right { display: flex; align-items: center; gap: 10px; }
+
+  /* ─── FORUM FEED LAYOUT ─── */
+  .forum-body { display: flex; flex: 1; gap: 0; min-height: 0; overflow: hidden; }
+  .forum-center {
+    flex: 1;
+    min-width: 0;
+    padding: 20px 32px 32px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .forum-center > * { width: min(100%, 820px); }
+  .forum-right { width: 220px; flex-shrink: 0; border-left: 1px solid var(--border); padding: 16px; background: #fff; overflow-y: auto; }
+
+  /* Forum secondary sidebar */
+  .fsb-label { font-size: 10px; font-weight: 600; color: var(--text-muted); letter-spacing: .06em; text-transform: uppercase; padding: 4px 16px 6px; }
+  .fsb-item {
+    display: flex; align-items: center; gap: 8px; padding: 7px 16px;
+    font-size: 13px; color: var(--text-secondary); cursor: pointer;
+  }
+  .fsb-item:hover { background: var(--page-bg); }
+  .fsb-item.active { background: var(--blue-light); color: var(--blue); font-weight: 500; }
+  .fsb-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .fsb-count { margin-left: auto; font-size: 11px; color: var(--text-muted); background: var(--page-bg); padding: 1px 6px; border-radius: 20px; }
+  .fsb-divider { border: none; border-top: 1px solid var(--border-light); margin: 8px 0; }
+
+  /* ─── FEED TABS ─── */
+  .feed-tabs-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+  .feed-tabs { display: flex; gap: 2px; background: var(--page-bg); padding: 3px; border-radius: 8px; border: 1px solid var(--border); }
+  .feed-tab { font-size: 12.5px; padding: 5px 14px; border-radius: 6px; cursor: pointer; color: var(--text-secondary); }
+  .feed-tab.active { background: #fff; color: var(--text-primary); font-weight: 500; box-shadow: var(--shadow-sm); }
+  .top-subtabs { display: flex; gap: 4px; }
+  .top-subtab { font-size: 12px; padding: 4px 10px; border-radius: 6px; border: 1px solid var(--border); background: #fff; cursor: pointer; color: var(--text-secondary); }
+  .top-subtab.active { background: var(--blue-light); color: var(--blue); border-color: var(--blue-mid); font-weight: 500; }
+  .feed-toolbar { display: flex; flex-direction: column; gap: 14px; margin-bottom: 16px; }
+  .feed-toolbar-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .feed-sort-tabs {
+    display: inline-flex;
+    gap: 2px;
+    padding: 3px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: #fff;
+    box-shadow: var(--shadow-sm);
+  }
+  .feed-sort-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 12px;
+    border-radius: 8px;
+    font-size: 12.5px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all .15s;
+  }
+  .feed-sort-tab:hover { background: var(--page-bg); color: var(--text-primary); }
+  .feed-sort-tab.active { background: var(--blue-light); color: var(--blue); font-weight: 600; }
+  .feed-filter-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .feed-filter-chips { display: flex; gap: 8px; flex-wrap: wrap; }
+  .filter-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: #fff;
+    color: var(--text-secondary);
+    font-size: 12px;
+    cursor: pointer;
+    transition: all .15s;
+  }
+  .filter-chip:hover { border-color: var(--blue-mid); color: var(--text-primary); }
+  .filter-chip.active { background: var(--blue-light); border-color: var(--blue-mid); color: var(--blue); font-weight: 600; }
+
+  /* ─── POST CARD ─── */
+  .post-card {
+    background: #fff; border: 1px solid var(--border); border-radius: var(--radius-lg);
+    padding: 16px; margin-bottom: 10px; display: flex; gap: 12px;
+    box-shadow: var(--shadow-sm); transition: box-shadow .15s, border-color .15s;
+  }
+  .post-card:hover { box-shadow: var(--shadow-md); border-color: #d1d5e0; }
+  .vote-col { display: flex; flex-direction: column; align-items: center; gap: 4px; flex-shrink: 0; padding-top: 2px; }
+  .vote-btn {
+    width: 26px; height: 26px; display: flex; align-items: center; justify-content: center;
+    border-radius: 6px; cursor: pointer; border: 1px solid var(--border); background: #fff;
+    font-size: 11px; color: var(--text-muted); transition: all .15s;
+  }
+  .vote-btn:hover { border-color: var(--blue-mid); color: var(--blue); background: var(--blue-light); }
+  .vote-btn.upvoted { background: var(--blue-light); border-color: var(--blue-mid); color: var(--blue); }
+  .vote-count { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+  .vote-count.upvoted { color: var(--blue); }
+  .post-main { flex: 1; min-width: 0; }
+  .post-top { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 6px; flex-wrap: wrap; }
+  .post-title { font-size: 14px; font-weight: 600; color: var(--text-primary); line-height: 1.45; cursor: pointer; }
+  .post-title:hover { color: var(--blue); }
+  .post-meta { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; flex-wrap: wrap; }
+  .avatar-xs {
+    width: 20px; height: 20px; border-radius: 50%; background: var(--blue-light);
+    display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 600; color: var(--blue); flex-shrink: 0;
+  }
+  .meta-text { font-size: 12px; color: var(--text-muted); }
+  .meta-dot { font-size: 10px; color: var(--text-muted); }
+  .post-excerpt { font-size: 13px; color: var(--text-secondary); line-height: 1.55; margin-bottom: 10px; }
+  .post-actions { display: flex; align-items: center; gap: 14px; }
+  .action-btn {
+    display: flex; align-items: center; gap: 5px; font-size: 12px; color: var(--text-muted);
+    cursor: pointer; padding: 4px 0; transition: color .15s;
+  }
+  .action-btn:hover { color: var(--blue); }
+  .action-btn svg { width: 14px; height: 14px; }
+  .action-btn-spacer { margin-left: auto; }
+
+  /* ─── BADGES & TAGS ─── */
+  .badge {
+    display: inline-flex; align-items: center; font-size: 11px; font-weight: 500;
+    padding: 2px 8px; border-radius: 20px; white-space: nowrap;
+  }
+  .badge-blue { background: var(--blue-light); color: var(--blue); }
+  .badge-green { background: var(--green-light); color: #059669; }
+  .badge-amber { background: var(--amber-light); color: #d97706; }
+  .badge-red { background: var(--red-light); color: #dc2626; }
+  .badge-purple { background: var(--purple-light); color: #7c3aed; }
+  .badge-pink { background: var(--pink-light); color: #db2777; }
+  .badge-teal { background: var(--teal-light); color: #0d9488; }
+  .badge-gray { background: var(--page-bg); color: var(--text-secondary); border: 1px solid var(--border); }
+  .pinned-badge { display: inline-flex; align-items: center; gap: 3px; font-size: 11px; color: #d97706; background: var(--amber-light); border: 1px solid #fde68a; padding: 2px 7px; border-radius: 6px; }
+  .locked-badge { display: inline-flex; align-items: center; gap: 3px; font-size: 11px; color: #dc2626; background: var(--red-light); border: 1px solid #fca5a5; padding: 2px 7px; border-radius: 6px; }
+  .mod-badge { display: inline-flex; align-items: center; gap: 3px; font-size: 11px; color: #7c3aed; background: var(--purple-light); border: 1px solid #ddd6fe; padding: 2px 7px; border-radius: 6px; }
+  .op-badge { font-size: 10px; font-weight: 600; color: var(--blue); background: var(--blue-light); border: 1px solid var(--blue-mid); padding: 1px 5px; border-radius: 4px; }
+
+  /* ─── RIGHT PANEL ─── */
+  .rp-section { margin-bottom: 20px; }
+  .rp-title { font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 10px; }
+  .rp-tag-row { display: flex; align-items: center; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid var(--border-light); }
+  .rp-tag-row:last-child { border-bottom: none; }
+  .rp-count { font-size: 11px; color: var(--text-muted); }
+  .rp-member { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .rp-member-info { font-size: 12px; color: var(--text-secondary); }
+  .rp-member-sub { font-size: 11px; color: var(--text-muted); }
+  .rp-stat { display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid var(--border-light); font-size: 12px; }
+  .rp-stat:last-child { border-bottom: none; }
+  .rp-stat-val { font-weight: 600; color: var(--text-primary); }
+
+  /* ─── THREAD VIEW ─── */
+  .thread-container { max-width: 760px; padding: 24px; }
+  .thread-op {
+    background: #fff; border: 1px solid var(--border); border-radius: var(--radius-lg);
+    padding: 20px; margin-bottom: 16px; box-shadow: var(--shadow-sm);
+  }
+  .thread-op-meta { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+  .thread-op-title { font-size: 20px; font-weight: 700; line-height: 1.35; margin-bottom: 10px; }
+  .thread-body { font-size: 14px; color: var(--text-secondary); line-height: 1.7; }
+  .thread-body p { margin-bottom: 12px; }
+  .thread-body strong { color: var(--text-primary); font-weight: 600; }
+  .thread-body code { background: var(--page-bg); border: 1px solid var(--border); padding: 1px 5px; border-radius: 4px; font-size: 12.5px; font-family: monospace; }
+  .thread-actions { display: flex; align-items: center; gap: 14px; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border-light); }
+  .vote-row { display: flex; align-items: center; gap: 6px; }
+  .vote-big { display: flex; align-items: center; gap: 3px; }
+  .vote-big-btn {
+    display: flex; align-items: center; justify-content: center; padding: 4px 10px;
+    border: 1px solid var(--border); border-radius: 6px; cursor: pointer; font-size: 13px; transition: all .15s; background: #fff;
+  }
+  .vote-big-btn:hover { border-color: var(--blue-mid); background: var(--blue-light); color: var(--blue); }
+  .vote-big-btn.upvoted { border-color: var(--blue-mid); background: var(--blue-light); color: var(--blue); font-weight: 600; }
+  .replies-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-top: 1px solid var(--border-light); border-bottom: 1px solid var(--border-light); margin-bottom: 12px; }
+  .replies-count { font-size: 13px; font-weight: 600; }
+  .sort-select { font-size: 12px; color: var(--text-secondary); background: var(--page-bg); border: 1px solid var(--border); padding: 4px 8px; border-radius: 6px; cursor: pointer; }
+  .reply-card {
+    display: flex; gap: 10px; padding: 14px 0;
+    border-bottom: 1px solid var(--border-light);
+  }
+  .reply-card:last-child { border-bottom: none; }
+  .reply-avatar {
+    width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0; margin-top: 2px;
+    display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600;
+  }
+  .reply-main { flex: 1; min-width: 0; }
+  .reply-meta { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; flex-wrap: wrap; }
+  .reply-author { font-size: 13px; font-weight: 600; }
+  .reply-body { font-size: 13.5px; color: var(--text-secondary); line-height: 1.6; }
+  .reply-actions { display: flex; align-items: center; gap: 12px; margin-top: 8px; }
+  .reply-nested { margin-top: 10px; margin-left: 20px; padding-left: 16px; border-left: 2px solid var(--border); }
+  .reply-compose {
+    background: #fff; border: 1px solid var(--border); border-radius: var(--radius-lg);
+    padding: 14px; margin-top: 16px; box-shadow: var(--shadow-sm);
+  }
+  .reply-compose textarea {
+    width: 100%; min-height: 80px; border: none; background: var(--page-bg);
+    padding: 10px 12px; border-radius: var(--radius-md); font-size: 13px;
+    font-family: var(--font); color: var(--text-primary); resize: none; outline: none;
+    border: 1px solid var(--border);
+  }
+  .reply-compose textarea:focus { border-color: var(--blue); }
+  .reply-compose-actions { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; }
+  .md-hint { font-size: 11px; color: var(--text-muted); }
+  .hidden-reply { opacity: .55; }
+  .hidden-notice {
+    font-size: 12px; color: #dc2626; background: var(--red-light);
+    border: 1px solid #fca5a5; padding: 3px 8px; border-radius: 6px; display: inline-block; margin-bottom: 6px;
+  }
+  .locked-notice {
+    display: flex; align-items: center; gap: 8px; padding: 10px 16px;
+    background: var(--amber-light); border-bottom: 1px solid #fde68a; font-size: 13px; color: #92400e;
+  }
+
+  /* ─── FULL VIEW SHELL ─── */
+  .fullview-header {
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    padding: 0 24px; height: 64px; border-bottom: 1px solid var(--border);
+    background: #6c7f9a; color: #fff; flex-shrink: 0;
+  }
+  .fullview-header-left,
+  .fullview-header-right { display: flex; align-items: center; gap: 12px; }
+  .fullview-back {
+    display: inline-flex; align-items: center; gap: 10px; padding: 0;
+    border: none; background: transparent; color: #fff; cursor: pointer;
+    font-size: 15px; font-weight: 600;
+  }
+  .fullview-context { font-size: 15px; font-weight: 600; color: rgba(255,255,255,.94); }
+  .fullview-badge {
+    display: inline-flex; align-items: center; padding: 5px 10px;
+    border-radius: 999px; background: rgba(255,255,255,.14); color: #fff;
+    font-size: 12px; font-weight: 600;
+  }
+
+  /* ─── COMPOSE ─── */
+  .compose-shell { display: flex; flex: 1; min-height: 0; background: #fff; position: relative; }
+  .compose-rail {
+    width: 280px; flex-shrink: 0; background: #f5f7fc; border-right: 1px solid var(--border-light);
+    padding: 32px 28px; display: flex; flex-direction: column; gap: 28px;
+  }
+  .compose-rail-title { font-size: 16px; font-weight: 700; color: #273449; letter-spacing: -.01em; }
+  .compose-step-list { position: relative; padding-left: 18px; }
+  .compose-step-list::before {
+    content: ""; position: absolute; left: 6px; top: 6px; bottom: 6px; width: 1px; background: #d8deea;
+  }
+  .compose-step {
+    position: relative; padding: 0 0 24px 22px; color: #94a3b8;
+  }
+  .compose-step:last-child { padding-bottom: 0; }
+  .compose-step::before {
+    content: ""; position: absolute; left: -1px; top: 4px; width: 10px; height: 10px;
+    border-radius: 50%; background: #c7d2e5; border: 2px solid #f5f7fc;
+  }
+  .compose-step.active { color: #1e3a8a; font-weight: 700; }
+  .compose-step.active::before { background: #1e40af; }
+  .compose-step-label { font-size: 14px; font-weight: 700; color: inherit; letter-spacing: -.01em; }
+  .compose-step-meta { display: block; margin-top: 5px; font-size: 12.5px; line-height: 1.5; color: #94a3b8; font-weight: 500; }
+  .compose-rail-card {
+    background: #fff; border: 1px solid var(--border); border-radius: 20px; padding: 20px; box-shadow: var(--shadow-sm);
+  }
+  .compose-rail-card h4 { font-size: 14px; margin-bottom: 10px; color: #273449; letter-spacing: -.01em; }
+  .compose-rail-card p { font-size: 12.5px; line-height: 1.7; color: var(--text-secondary); }
+  .compose-main { flex: 1; min-width: 0; overflow-y: auto; padding: 44px 56px 152px; }
+  .compose-wrap { max-width: 1180px; margin: 0 auto; }
+  .compose-header-block { padding-bottom: 32px; margin-bottom: 28px; border-bottom: 1px solid var(--border); }
+  .compose-title { font-size: 44px; font-weight: 800; line-height: 1.04; letter-spacing: -.03em; color: #101828; }
+  .compose-subtitle { font-size: 15px; line-height: 1.6; color: #8da0bd; margin-top: 12px; max-width: 720px; }
+  .compose-card { background: #fff; border: 1px solid var(--border); border-radius: 24px; padding: 36px 40px; box-shadow: var(--shadow-sm); }
+  .compose-grid { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(320px, 0.9fr); gap: 28px; align-items: start; }
+  .compose-main-column,
+  .compose-side-column { min-width: 0; }
+  .compose-section-title { font-size: 17px; font-weight: 700; color: #1e3a8a; margin-bottom: 28px; letter-spacing: -.01em; }
+  .compose-section-block + .compose-section-block { margin-top: 32px; }
+  .compose-side-card {
+    background: #fbfcff; border: 1px solid var(--border); border-radius: 18px;
+    padding: 22px; box-shadow: var(--shadow-sm);
+  }
+  .compose-side-card + .compose-side-card { margin-top: 18px; }
+  .compose-side-title { font-size: 14px; font-weight: 700; color: #24324a; margin-bottom: 14px; letter-spacing: -.01em; }
+  .compose-side-list { display: flex; flex-direction: column; gap: 12px; }
+  .compose-side-item { display: flex; justify-content: space-between; gap: 12px; font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
+  .compose-side-item strong { color: var(--text-primary); font-weight: 600; }
+  .form-group { margin-bottom: 24px; }
+  .form-label { display: block; font-size: 13.5px; font-weight: 700; color: var(--text-secondary); margin-bottom: 10px; letter-spacing: -.01em; }
+  .form-req { color: var(--red); margin-left: 2px; }
+  .form-note { font-size: 12px; color: var(--text-muted); font-weight: 500; margin-left: 4px; }
+  .form-input {
+    width: 100%; padding: 13px 15px; border: 1px solid var(--border); border-radius: 14px;
+    font-size: 14px; font-family: var(--font); color: var(--text-primary); outline: none;
+    transition: border-color .15s; background: #fff;
+  }
+  .form-input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(59,110,245,.08); }
+  .form-input.invalid,
+  .form-textarea.invalid { border-color: #fca5a5; box-shadow: 0 0 0 3px rgba(239,68,68,.08); }
+  .form-textarea {
+    width: 100%; min-height: 340px; padding: 16px 18px; border: 1px solid var(--border); border-radius: 16px;
+    font-size: 14px; font-family: var(--font); color: var(--text-primary); resize: vertical; outline: none;
+    transition: border-color .15s; background: #fff; line-height: 1.75;
+  }
+  .form-textarea:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(59,110,245,.08); }
+  .form-helper-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 10px; }
+  .helper-text { font-size: 12.5px; line-height: 1.6; color: var(--text-muted); }
+  .counter-text { font-size: 12.5px; font-weight: 600; color: #7c8ba5; }
+  .tag-picker { display: flex; gap: 10px; flex-wrap: wrap; }
+  .tag-chip {
+    font-size: 13px; padding: 8px 16px; border-radius: 999px;
+    border: 1px solid var(--border); background: var(--page-bg);
+    cursor: pointer; color: var(--text-secondary); transition: all .15s;
+  }
+  .tag-chip:hover { border-color: var(--blue-mid); color: var(--blue); }
+  .tag-chip.selected { background: var(--blue-light); color: var(--blue); border-color: var(--blue-mid); font-weight: 500; }
+  .selected-tags-summary { margin-top: 12px; font-size: 13px; color: var(--text-secondary); }
+  .validation-text { display: none; margin-top: 10px; font-size: 12.5px; line-height: 1.5; color: #dc2626; }
+  .validation-text.visible { display: block; }
+  .md-toolbar { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+  .md-btn { padding: 8px 12px; font-size: 12px; border: 1px solid var(--border); border-radius: 10px; background: var(--page-bg); cursor: pointer; color: var(--text-secondary); }
+  .md-btn:hover { background: var(--border-light); }
+  .editor-mode-tabs {
+    display: inline-flex; gap: 4px; padding: 4px; border-radius: 12px;
+    border: 1px solid var(--border); background: #fff; margin-bottom: 14px;
+  }
+  .editor-mode-tab { padding: 9px 14px; border-radius: 10px; font-size: 12.5px; color: var(--text-secondary); cursor: pointer; font-weight: 600; }
+  .editor-mode-tab.active { background: var(--blue-light); color: var(--blue); }
+  .compose-editor-panel { display: none; }
+  .compose-editor-panel.active { display: block; }
+  .preview-surface {
+    min-height: 340px; border: 1px solid var(--border); border-radius: 16px;
+    background: #fbfcfe; padding: 20px 22px; line-height: 1.8; color: var(--text-secondary); font-size: 14px;
+  }
+  .preview-surface h1,
+  .preview-surface h2,
+  .preview-surface h3,
+  .preview-surface strong { color: var(--text-primary); }
+  .preview-surface ul,
+  .preview-surface ol { padding-left: 20px; margin: 10px 0; }
+  .preview-surface blockquote { margin: 12px 0; padding-left: 12px; border-left: 3px solid var(--blue-mid); color: #475569; }
+  .preview-surface code {
+    background: #eef2ff; color: #3730a3; padding: 2px 5px; border-radius: 4px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  .compose-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 30px; padding-top: 22px; border-top: 1px solid var(--border-light); }
+  .compose-note { font-size: 12.5px; line-height: 1.6; color: var(--text-muted); }
+  .compose-alert {
+    display: none; margin-top: 18px; padding: 14px 16px; border-radius: 14px;
+    border: 1px solid #fecaca; background: #fef2f2; color: #b91c1c; font-size: 12.5px; line-height: 1.55;
+  }
+  .compose-alert.visible { display: block; }
+  .sticky-compose-actions {
+    position: absolute; left: 280px; right: 0; bottom: 0;
+    display: flex; align-items: center; justify-content: flex-end; gap: 12px;
+    padding: 18px 32px; border-top: 1px solid var(--border);
+    background: rgba(255,255,255,.98); backdrop-filter: blur(10px);
+    box-shadow: 0 -8px 24px rgba(15, 23, 42, 0.06);
+  }
+
+  /* ─── SEARCH ─── */
+  .search-screen-shell { flex: 1; min-height: 0; overflow-y: auto; padding: 28px 32px 48px; }
+  .search-wrap { padding: 0; max-width: 920px; margin: 0 auto; }
+  .search-header-block {
+    display: flex; align-items: flex-end; justify-content: space-between; gap: 16px;
+    margin-bottom: 24px; padding-bottom: 18px; border-bottom: 1px solid var(--border);
+  }
+  .search-title { font-size: 28px; font-weight: 800; color: #101828; }
+  .search-subtitle { margin-top: 8px; font-size: 13px; color: #8da0bd; }
+  .search-bar-wrap { display: flex; gap: 10px; margin-bottom: 16px; }
+  .search-input-big {
+    flex: 1; padding: 11px 16px; border: 1px solid var(--border); border-radius: var(--radius-lg);
+    font-size: 14px; font-family: var(--font); outline: none; background: #fff;
+    box-shadow: var(--shadow-sm);
+  }
+  .search-input-big:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(59,110,245,.08); }
+  .search-filters { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+  .search-filter-label { font-size: 12px; color: var(--text-muted); }
+  .search-meta-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; flex-wrap: wrap; }
+  .search-empty {
+    display: none; padding: 28px; border: 1px dashed var(--border); border-radius: 18px;
+    background: #fbfcfe; color: var(--text-secondary); text-align: center; font-size: 13px;
+  }
+  .search-empty.visible { display: block; }
+  .search-results-card { background: #fff; border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-sm); }
+  .search-result { padding: 14px 16px; border-bottom: 1px solid var(--border-light); cursor: pointer; transition: background .1s; }
+  .search-result:last-child { border-bottom: none; }
+  .search-result:hover { background: var(--page-bg); }
+  .search-result.hidden { display: none; }
+  .search-result-title { font-size: 14px; font-weight: 600; color: var(--text-primary); margin-bottom: 5px; line-height: 1.4; }
+  .search-result-excerpt { font-size: 12.5px; color: var(--text-secondary); line-height: 1.5; margin-bottom: 6px; }
+  .highlight { background: #fef9c3; color: #854d0e; border-radius: 2px; padding: 0 2px; }
+  .search-footer { font-size: 12px; color: var(--text-muted); margin-top: 10px; }
+
+  /* ─── MODERATION ─── */
+  .mod-wrap { display: flex; flex: 1; min-height: 0; }
+  .mod-sidebar { width: 220px; flex-shrink: 0; border-right: 1px solid var(--border); padding: 16px 0; background: #f8fafc; }
+  .mod-main { flex: 1; padding: 24px; overflow-y: auto; }
+  .mod-card { background: #fff; border: 1px solid var(--border); border-radius: var(--radius-lg); margin-bottom: 10px; overflow: hidden; box-shadow: var(--shadow-sm); }
+  .mod-row { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-bottom: 1px solid var(--border-light); }
+  .mod-row:last-child { border-bottom: none; }
+  .mod-indicator { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .mod-info { flex: 1; min-width: 0; }
+  .mod-title { font-size: 13px; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 2px; }
+  .mod-by { font-size: 11px; color: var(--text-muted); }
+  .mod-btns { display: flex; gap: 6px; }
+  .quick-actions { background: #fff; border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 14px; margin-top: 16px; }
+  .quick-title { font-size: 12.5px; font-weight: 600; color: var(--text-secondary); margin-bottom: 10px; }
+  .quick-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .quick-btn {
+    display: flex; align-items: center; gap: 7px; padding: 9px 12px;
+    border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--page-bg);
+    cursor: pointer; font-size: 12.5px; color: var(--text-secondary); transition: all .15s;
+  }
+  .quick-btn:hover { border-color: var(--blue-mid); color: var(--blue); background: var(--blue-light); }
+  .mod-filter-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px; }
+  .mod-filter-tab {
+    padding: 6px 12px; border-radius: 999px; border: 1px solid var(--border); background: #fff;
+    color: var(--text-secondary); font-size: 12px; font-weight: 600; cursor: pointer;
+  }
+  .mod-filter-tab.active { background: var(--blue-light); color: var(--blue); border-color: var(--blue-mid); }
+  .mod-sidebar .fsb-item { transition: all .15s; }
+  .mod-sidebar .fsb-item.active { background: var(--blue-light); color: var(--blue); font-weight: 600; }
+  .mod-section { margin-bottom: 20px; }
+  .mod-section.hidden { display: none; }
+  .mod-topbar {
+    display: flex; align-items: flex-start; justify-content: space-between; gap: 16px;
+    margin-bottom: 18px;
+  }
+  .mod-topbar h2 { font-size: 20px; font-weight: 800; color: #111827; }
+  .mod-topbar p { margin-top: 6px; font-size: 13px; color: #8da0bd; }
+  .mod-summary {
+    display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-bottom: 18px;
+  }
+  .mod-summary-card {
+    background: #fff; border: 1px solid var(--border); border-radius: 16px; padding: 14px 16px; box-shadow: var(--shadow-sm);
+  }
+  .mod-summary-label { font-size: 11px; text-transform: uppercase; letter-spacing: .05em; color: var(--text-muted); }
+  .mod-summary-value { margin-top: 8px; font-size: 22px; font-weight: 800; color: #111827; }
+  .mod-summary-note { margin-top: 6px; font-size: 12px; color: var(--text-secondary); }
+
+  @media (max-width: 1100px) {
+    .compose-shell { flex-direction: column; }
+    .compose-rail { width: 100%; border-right: none; border-bottom: 1px solid var(--border-light); }
+    .compose-main { padding: 28px 20px 120px; }
+    .sticky-compose-actions {
+      position: fixed; left: 0; right: 0; bottom: 0; padding: 16px 20px;
+    }
+    .compose-grid { grid-template-columns: 1fr; }
+    .mod-wrap { flex-direction: column; }
+    .mod-sidebar { width: 100%; border-right: none; border-bottom: 1px solid var(--border); }
+    .mod-summary { grid-template-columns: 1fr; }
+  }
+
+  /* ─── BUTTONS ─── */
+  .btn {
+    display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px;
+    border-radius: var(--radius-md); border: 1px solid var(--border); background: #fff;
+    font-size: 13px; font-family: var(--font); font-weight: 500; cursor: pointer; transition: all .15s; color: var(--text-primary);
+  }
+  .btn:hover { background: var(--page-bg); }
+  .btn-primary { background: var(--blue); border-color: var(--blue); color: #fff; }
+  .btn-primary:hover { background: #2d5ae0; border-color: #2d5ae0; }
+  .btn-danger { background: var(--red-light); border-color: #fca5a5; color: #dc2626; }
+  .btn-danger:hover { background: #fee2e2; }
+  .btn-sm { padding: 5px 10px; font-size: 12px; border-radius: var(--radius-sm); }
+  .btn-xs { padding: 3px 8px; font-size: 11px; border-radius: 5px; }
+
+  /* ─── UTILS ─── */
+  .flex { display: flex; }
+  .items-center { align-items: center; }
+  .gap-8 { gap: 8px; }
+  .gap-12 { gap: 12px; }
+  .ml-auto { margin-left: auto; }
+  .text-muted { color: var(--text-muted); font-size: 12px; }
+  .mt-4 { margin-top: 4px; }
+  .mt-8 { margin-top: 8px; }
+  .fw-600 { font-weight: 600; }
+
+  /* ─── SCROLLBAR ─── */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+</style>
+</head>
+<body>
+
+<!-- ══════════════ TOP BAR ══════════════ -->
+<div class="topbar">
+  <div class="topbar-brand">
+    <div class="brand-avatar">RI</div>
+    <span class="brand-name">Rezolut Infotech</span>
+    <span class="brand-chevron">››</span>
+  </div>
+</div>
+
+<div class="app">
+
+<!-- ══════════════ LEFT SIDEBAR ══════════════ -->
+<div class="sidebar">
+  <div class="sidebar-inner">
+    <div class="sidebar-item" onclick="showScreen('feed-screen')">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      Feed
+    </div>
+    <div class="sidebar-item" onclick="showScreen('feed-screen')">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Build
+      <span class="sidebar-item-dots">···</span>
+    </div>
+    <hr class="sidebar-divider">
+
+    <!-- RZ Team group -->
+    <div class="sidebar-group">
+      <div class="sidebar-group-header open" onclick="toggleGroup(this)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+        RZ Team
+        <svg class="chev" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="sidebar-group-children">
+        <div class="sidebar-child" onclick="showScreen('feed-screen')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+          Article
+        </div>
+        <div class="sidebar-child" onclick="showScreen('feed-screen')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>
+          Course
+        </div>
+        <!-- FORUM — new nav item -->
+        <div class="sidebar-child active" id="forum-nav-item" onclick="showScreen('feed-screen')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+          Forum
+        </div>
+      </div>
+    </div>
+    <hr class="sidebar-divider">
+
+    <!-- AI Mastery group -->
+    <div class="sidebar-group">
+      <div class="sidebar-group-header" onclick="toggleGroup(this)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+        AI Mastery
+        <svg class="chev" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="sidebar-group-children" style="display:none">
+        <div class="sidebar-child">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+          Article
+        </div>
+        <div class="sidebar-child">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>
+          Course
+        </div>
+        <div class="sidebar-child">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+          Forum
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sidebar-footer">
+    <div class="sidebar-settings">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+      Settings
+    </div>
+    <div class="sidebar-user">
+      <div class="user-avatar">KT</div>
+      <div>
+        <div class="user-name">Kashish Tanna</div>
+      </div>
+      <span class="user-dots ml-auto">···</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ MAIN ══════════════ -->
+<div class="main">
+
+<!-- ── SCREEN 1: FORUM FEED ── -->
+<div class="screen active" id="feed-screen">
+  <div class="content-header">
+    <div class="flex items-center gap-12">
+      <span class="content-header-title">Forum</span>
+      <span class="badge badge-blue">RZ Team</span>
+    </div>
+    <div class="content-header-right">
+      <div class="btn btn-sm" onclick="showScreen('search-screen')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+        Search
+      </div>
+      <div class="btn btn-primary btn-sm" onclick="showScreen('compose-screen')">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        New post
+      </div>
+      <span class="text-muted">My bookmark</span>
+    </div>
+  </div>
+
+  <div class="forum-body">
+    <!-- Center feed -->
+    <div class="forum-center">
+      <div class="feed-toolbar">
+        <div class="feed-toolbar-top">
+          <div class="feed-sort-tabs" id="feed-sort-tabs">
+            <div class="feed-sort-tab active" onclick="setFeedTab(this,'Hot')">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.174-.105-.949-.199-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738a.36.36 0 01.083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.632-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24.009 12.017 24.009c6.624 0 11.99-5.367 11.99-11.988C24.007 5.367 18.641 0 12.017 0z"/></svg>
+              Hot
+            </div>
+            <div class="feed-sort-tab" onclick="setFeedTab(this,'New')">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              New
+            </div>
+            <div class="feed-sort-tab" onclick="setFeedTab(this,'Top')">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+              Top
+            </div>
+          </div>
+          <div class="feed-tabs" id="feed-tabs">
+            <div class="feed-tab active" onclick="switchFeedPeriod(this,'Today')">Today</div>
+            <div class="feed-tab" onclick="switchFeedPeriod(this,'This week')">This week</div>
+            <div class="feed-tab" onclick="switchFeedPeriod(this,'All time')">All time</div>
+          </div>
+        </div>
+        <div class="feed-filter-row">
+          <div class="feed-filter-chips">
+            <div class="filter-chip active" onclick="toggleFilterChip(this)">All posts</div>
+            <div class="filter-chip" onclick="toggleFilterChip(this)">Launches</div>
+            <div class="filter-chip" onclick="toggleFilterChip(this)">Feedback</div>
+            <div class="filter-chip" onclick="toggleFilterChip(this)">Tools</div>
+            <div class="filter-chip" onclick="toggleFilterChip(this)">Questions</div>
+            <div class="filter-chip" onclick="toggleFilterChip(this)">Saved</div>
+            <div class="filter-chip" onclick="toggleFilterChip(this)">My posts</div>
+          </div>
+          <span class="text-muted" id="feed-period-label" style="font-size:13px">Hot · Today</span>
+        </div>
+      </div>
+
+      <!-- Post 1 – pinned -->
+      <div class="post-card">
+        <div class="vote-col">
+          <div class="vote-btn upvoted" onclick="toggleVote(this)">▲</div>
+          <div class="vote-count upvoted" id="vc1">47</div>
+          <div class="vote-btn" onclick="toggleDownvote(this)">▼</div>
+        </div>
+        <div class="post-main">
+          <div class="post-top">
+            <span class="pinned-badge">📌 Pinned</span>
+            <span class="badge badge-blue">Launches</span>
+          </div>
+          <div class="post-title" onclick="showScreen('thread-screen')">Just launched: Quillr — an AI writing sidekick that lives in your menubar</div>
+          <div class="post-meta">
+            <div class="avatar-xs" style="background:#dbeafe;color:#1d4ed8">PR</div>
+            <span class="meta-text">priya_r</span>
+            <span class="meta-dot">·</span>
+            <span class="meta-text">RZ Team</span>
+            <span class="meta-dot">·</span>
+            <span class="meta-text">3h ago</span>
+            <span class="meta-dot">·</span>
+            <span class="meta-text">24 replies</span>
+          </div>
+          <div class="post-excerpt">After 6 months of building in public, Quillr is live on Product Hunt today. It's a native menubar app for macOS that helps you rephrase, expand, or summarise content on demand — no copy-paste, no tab switching. Would love your feedback on the onboarding flow...</div>
+          <div class="post-actions">
+            <div class="action-btn" onclick="showScreen('thread-screen')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+              24 replies
+            </div>
+            <div class="action-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8M16 6l-4-4-4 4M12 2v13"/></svg>
+              Share
+            </div>
+            <div class="action-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
+              Save
+            </div>
+            <div class="action-btn action-btn-spacer">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Post 2 -->
+      <div class="post-card">
+        <div class="vote-col">
+          <div class="vote-btn" onclick="toggleVote(this)">▲</div>
+          <div class="vote-count" id="vc2">31</div>
+          <div class="vote-btn" onclick="toggleDownvote(this)">▼</div>
+        </div>
+        <div class="post-main">
+          <div class="post-top">
+            <span class="badge badge-teal">Feedback</span>
+          </div>
+          <div class="post-title">How do you handle pricing conversations with enterprise leads who ghost after the demo?</div>
+          <div class="post-meta">
+            <div class="avatar-xs" style="background:#d1fae5;color:#047857">MK</div>
+            <span class="meta-text">m_khan</span>
+            <span class="meta-dot">·</span>
+            <span class="meta-text">RZ Team</span>
+            <span class="meta-dot">·</span>
+            <span class="meta-text">5h ago</span>
+            <span class="meta-dot">·</span>
+            <span class="meta-text">18 replies</span>
+          </div>
+          <div class="post-excerpt">Had three promising demos last week, all went quiet. Our pricing is $400/mo for teams. Wondering if the pricing page is scaring them off or if it's a follow-up timing issue...</div>
+          <div class="post-actions">
+            <div class="action-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+              18 replies
+            </div>
+            <div class="action-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8M16 6l-4-4-4 4M12 2v13"/></svg>
+              Share
+            </div>
+            <div class="action-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
+              Save
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Post 3 -->
+      <div class="post-card">
+        <div class="vote-col">
+          <div class="vote-btn" onclick="toggleVote(this)">▲</div>
+          <div class="vote-count" id="vc3">19</div>
+          <div class="vote-btn" onclick="toggleDownvote(this)">▼</div>
+        </div>
+        <div class="post-main">
+          <div class="post-top">
+            <span class="badge badge-purple">Tools</span>
+          </div>
+          <div class="post-title">My 2026 indie stack: Supabase + Vercel + Resend + Stripe — and why I dropped Firebase</div>
+          <div class="post-meta">
+            <div class="avatar-xs" style="background:#ede9fe;color:#6d28d9">TL</div>
+            <span class="meta-text">tom_l</span>
+            <span class="meta-dot">·</span>
+            <span class="meta-text">RZ Team</span>
+            <span class="meta-dot">·</span>
+            <span class="meta-text">9h ago</span>
+            <span class="meta-dot">·</span>
+            <span class="meta-text">11 replies</span>
+          </div>
+          <div class="post-excerpt">Long post incoming. I've been building solo for 3 years and have tried basically everything. Here's what I've settled on and why each piece is non-negotiable for a one-person team...</div>
+          <div class="post-actions">
+            <div class="action-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+              11 replies
+            </div>
+            <div class="action-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8M16 6l-4-4-4 4M12 2v13"/></svg>
+              Share
+            </div>
+            <div class="action-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
+              Save
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Post 4 -->
+      <div class="post-card">
+        <div class="vote-col">
+          <div class="vote-btn" onclick="toggleVote(this)">▲</div>
+          <div class="vote-count" id="vc4">8</div>
+          <div class="vote-btn" onclick="toggleDownvote(this)">▼</div>
+        </div>
+        <div class="post-main">
+          <div class="post-top">
+            <span class="badge badge-amber">Questions</span>
+          </div>
+          <div class="post-title">Anyone using Clerk vs Auth0 for B2B SaaS in 2026? Looking for real-world opinions</div>
+          <div class="post-meta">
+            <div class="avatar-xs" style="background:#fef3c7;color:#b45309">SV</div>
+            <span class="meta-text">sara_v</span>
+            <span class="meta-dot">·</span>
+            <span class="meta-text">RZ Team</span>
+            <span class="meta-dot">·</span>
+            <span class="meta-text">14h ago</span>
+            <span class="meta-dot">·</span>
+            <span class="meta-text">7 replies</span>
+          </div>
+          <div class="post-actions">
+            <div class="action-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+              7 replies
+            </div>
+            <div class="action-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8M16 6l-4-4-4 4M12 2v13"/></svg>
+              Share
+            </div>
+            <div class="action-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
+              Save
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Post 5 -->
+      <div class="post-card">
+        <div class="vote-col">
+          <div class="vote-btn" onclick="toggleVote(this)">▲</div>
+          <div class="vote-count" id="vc5">5</div>
+          <div class="vote-btn" onclick="toggleDownvote(this)">▼</div>
+        </div>
+        <div class="post-main">
+          <div class="post-top">
+            <span class="badge badge-pink">Announcements</span>
+          </div>
+          <div class="post-title">We're hosting a live AMA with three YC S24 founders next Friday — submit your questions</div>
+          <div class="post-meta">
+            <div class="avatar-xs" style="background:#fce7f3;color:#be185d">JD</div>
+            <span class="meta-text">jane_d · MODERATOR</span>
+            <span class="meta-dot">·</span>
+            <span class="meta-text">22h ago</span>
+            <span class="meta-dot">·</span>
+            <span class="meta-text">3 replies</span>
+          </div>
+          <div class="post-actions">
+            <div class="action-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+              3 replies
+            </div>
+            <div class="action-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8M16 6l-4-4-4 4M12 2v13"/></svg>
+              Share
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="text-align:center; padding: 20px 0; color: var(--text-muted); font-size:13px">You're all caught up.</div>
+    </div>
+
+    <!-- Right panel -->
+    <div class="forum-right">
+      <div class="rp-section">
+        <div class="rp-title">Popular tags</div>
+        <div class="rp-tag-row"><span class="badge badge-blue">Launches</span><span class="rp-count">142</span></div>
+        <div class="rp-tag-row"><span class="badge badge-teal">Feedback</span><span class="rp-count">98</span></div>
+        <div class="rp-tag-row"><span class="badge badge-purple">Tools</span><span class="rp-count">74</span></div>
+        <div class="rp-tag-row"><span class="badge badge-amber">Questions</span><span class="rp-count">61</span></div>
+        <div class="rp-tag-row"><span class="badge badge-red">Hiring</span><span class="rp-count">29</span></div>
+        <div class="rp-tag-row"><span class="badge badge-pink">Announcements</span><span class="rp-count">17</span></div>
+      </div>
+      <div class="rp-section">
+        <div class="rp-title">Top contributors</div>
+        <div class="rp-member">
+          <div class="user-avatar" style="width:28px;height:28px;font-size:11px">PR</div>
+          <div><div class="rp-member-info fw-600">priya_r</div><div class="rp-member-sub">47 upvotes today</div></div>
+        </div>
+        <div class="rp-member">
+          <div class="user-avatar" style="width:28px;height:28px;font-size:11px;background:#d1fae5;color:#047857">MK</div>
+          <div><div class="rp-member-info fw-600">m_khan</div><div class="rp-member-sub">31 upvotes today</div></div>
+        </div>
+        <div class="rp-member">
+          <div class="user-avatar" style="width:28px;height:28px;font-size:11px;background:#ede9fe;color:#6d28d9">TL</div>
+          <div><div class="rp-member-info fw-600">tom_l</div><div class="rp-member-sub">19 upvotes today</div></div>
+        </div>
+      </div>
+      <div class="rp-section">
+        <div class="rp-title">Community stats</div>
+        <div class="rp-stat"><span>Posts</span><span class="rp-stat-val">1,247</span></div>
+        <div class="rp-stat"><span>Replies</span><span class="rp-stat-val">8,419</span></div>
+        <div class="rp-stat"><span>Members</span><span class="rp-stat-val">342</span></div>
+        <div class="rp-stat"><span>Upvotes</span><span class="rp-stat-val">22,801</span></div>
+      </div>
+      <div style="margin-top:8px">
+        <div class="btn btn-sm" style="width:100%;justify-content:center;margin-bottom:8px" onclick="showScreen('mod-screen')">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          Moderation panel
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── SCREEN 2: THREAD VIEW ── -->
+<div class="screen full-view" id="thread-screen">
+  <div class="fullview-header">
+    <div class="fullview-header-left">
+      <button class="fullview-back" onclick="showScreen('feed-screen')">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+        Back to Forum
+      </button>
+      <span class="fullview-context">Thread</span>
+    </div>
+    <div class="fullview-header-right">
+      <div class="btn btn-sm">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8M16 6l-4-4-4 4M12 2v13"/></svg>
+        Share
+      </div>
+      <div class="btn btn-sm">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
+        Save
+      </div>
+    </div>
+  </div>
+
+  <div class="locked-notice">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+    This thread is locked. New replies are disabled.
+  </div>
+
+  <div style="overflow-y:auto; flex:1;">
+  <div class="thread-container">
+    <!-- OP -->
+    <div class="thread-op">
+      <div class="thread-op-meta">
+        <span class="badge badge-blue">Launches</span>
+        <span class="pinned-badge">📌 Pinned</span>
+        <span class="locked-badge">🔒 Locked</span>
+      </div>
+      <div class="thread-op-title">Just launched: Quillr — an AI writing sidekick that lives in your menubar</div>
+      <div class="post-meta" style="margin-bottom:14px">
+        <div class="avatar-xs" style="background:#dbeafe;color:#1d4ed8;width:26px;height:26px;font-size:10px">PR</div>
+        <span style="font-size:13px;font-weight:600">priya_r</span>
+        <span class="op-badge">OP</span>
+        <span class="meta-dot">·</span>
+        <span class="meta-text">RZ Team</span>
+        <span class="meta-dot">·</span>
+        <span class="meta-text">3h ago · edited 2h ago</span>
+      </div>
+      <div class="thread-body">
+        <p>After 6 months of building in public, <strong>Quillr</strong> is live on Product Hunt today. It's a native menubar app for macOS that plugs into any text field and helps you rephrase, expand, or summarise content on demand — no copy-paste, no tab switching.</p>
+        <p>Would love feedback from this community especially on:</p>
+        <p>1. Onboarding flow — is 3 steps too many for a menubar app?<br>2. Pricing — $9/mo solo, $19/mo team. Does it feel right?<br>3. The label "Rephrase" — should it be "Rewrite"?</p>
+        <p>PH link in comments. Thanks for all the support so far! 🚀</p>
+      </div>
+      <div class="thread-actions">
+        <div class="vote-big">
+          <div class="vote-big-btn upvoted">▲ Upvote</div>
+          <div style="font-size:13px;font-weight:600;padding:0 4px;color:var(--blue)">47</div>
+        </div>
+        <div class="action-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8M16 6l-4-4-4 4M12 2v13"/></svg>
+          Share
+        </div>
+        <div class="action-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
+          Save
+        </div>
+        <div class="action-btn ml-auto">···</div>
+      </div>
+    </div>
+
+    <!-- Replies section -->
+    <div class="replies-header">
+      <span class="replies-count">24 replies</span>
+      <select class="sort-select">
+        <option>Sort by: Hot</option>
+        <option>Sort by: New</option>
+        <option>Sort by: Top</option>
+      </select>
+    </div>
+
+    <!-- Reply 1 -->
+    <div class="reply-card">
+      <div class="reply-avatar" style="background:#d1fae5;color:#047857">MK</div>
+      <div class="reply-main">
+        <div class="reply-meta">
+          <span class="reply-author">m_khan</span>
+          <span class="badge badge-gray" style="font-size:10px;padding:1px 5px">Member</span>
+          <span class="meta-dot">·</span>
+          <span class="meta-text">2h ago</span>
+        </div>
+        <div class="reply-body">Congrats on the launch! On "Rephrase" vs "Rewrite" — I'd go with <strong>Rewrite</strong>, it implies more agency. Also quick q: does it work in VS Code terminals or just GUI text fields? @priya_r</div>
+        <div class="reply-actions">
+          <div class="action-btn">▲ 12</div>
+          <div class="action-btn">↩ Reply</div>
+          <div class="action-btn">···</div>
+        </div>
+
+        <!-- Nested reply – level 2 -->
+        <div class="reply-nested">
+          <div class="reply-card" style="border:none;padding:10px 0 0;">
+            <div class="reply-avatar" style="background:#dbeafe;color:#1d4ed8;width:26px;height:26px;font-size:10px">PR</div>
+            <div class="reply-main">
+              <div class="reply-meta">
+                <span class="reply-author">priya_r</span>
+                <span class="op-badge">OP</span>
+                <span class="meta-dot">·</span>
+                <span class="meta-text">1h ago</span>
+              </div>
+              <div class="reply-body">Good call — changing to "Rewrite" in the next build! On VS Code: GUI text fields only for now, native accessibility API doesn't expose terminal input yet. On the roadmap though 🙌</div>
+              <div class="reply-actions">
+                <div class="action-btn">▲ 5</div>
+                <div class="action-btn">↩ Reply</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Reply 2 – hidden by mod -->
+    <div class="reply-card">
+      <div class="reply-avatar" style="background:#fee2e2;color:#dc2626">XX</div>
+      <div class="reply-main hidden-reply">
+        <div class="hidden-notice">Hidden by moderator</div>
+        <div class="reply-meta">
+          <span class="reply-author">anon_user</span>
+          <span class="meta-dot">·</span>
+          <span class="meta-text">1h ago</span>
+        </div>
+        <div class="reply-body">[This content has been hidden. Original visible to author only.]</div>
+      </div>
+    </div>
+
+    <!-- Reply 3 -->
+    <div class="reply-card">
+      <div class="reply-avatar" style="background:#ede9fe;color:#6d28d9">TL</div>
+      <div class="reply-main">
+        <div class="reply-meta">
+          <span class="reply-author">tom_l</span>
+          <span class="meta-dot">·</span>
+          <span class="meta-text">45 min ago</span>
+        </div>
+        <div class="reply-body">Pricing feels right for a solo indie. $9/mo is impulse-buy territory. Pro tip: add an annual option at $79 — instant 30% revenue boost and better retention signal from day 1.</div>
+        <div class="reply-actions">
+          <div class="action-btn vote-big-btn upvoted" style="font-size:12px;padding:3px 10px">▲ 6</div>
+          <div class="action-btn">↩ Reply</div>
+          <div class="action-btn">···</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Disabled reply box -->
+    <div class="reply-compose" style="opacity:.5;pointer-events:none">
+      <div style="font-size:13px;color:var(--text-muted);margin-bottom:10px">Thread is locked — new replies are disabled.</div>
+      <textarea disabled placeholder="Write a reply in Markdown..."></textarea>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- ── SCREEN 3: COMPOSE ── -->
+<div class="screen full-view" id="compose-screen">
+  <div class="fullview-header">
+    <div class="fullview-header-left">
+      <button class="fullview-back" onclick="showScreen('feed-screen')">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+        Back to Forum
+      </button>
+      <span class="fullview-context">New Post</span>
+    </div>
+    <div class="fullview-header-right">
+      <span class="fullview-badge">Markdown only</span>
+    </div>
+  </div>
+  <div class="compose-shell">
+    <aside class="compose-rail">
+      <div>
+        <div class="compose-rail-title">Post Content</div>
+      </div>
+      <div class="compose-step-list">
+        <div class="compose-step active">
+          <div class="compose-step-label">Post details</div>
+          <span class="compose-step-meta">Title, tags, and body</span>
+        </div>
+        <div class="compose-step">
+          <div class="compose-step-label">Formatting</div>
+          <span class="compose-step-meta">Markdown with preview</span>
+        </div>
+        <div class="compose-step">
+          <div class="compose-step-label">Review</div>
+          <span class="compose-step-meta">Validate before publish</span>
+        </div>
+      </div>
+      <div class="compose-rail-card">
+        <h4>Post rules</h4>
+        <p>Title is limited to 200 characters. Body supports Markdown only and can contain up to 10,000 characters. Add at least one tag and no more than three.</p>
+      </div>
+      <div class="compose-rail-card">
+        <h4>References used</h4>
+        <p>Layout borrows the structured full-screen workflow from authoring tools, while tags, threaded discussion expectations, and moderation affordances follow patterns common in Reddit, Quora, and Drupal.</p>
+      </div>
+    </aside>
+    <div class="compose-main">
+      <div class="compose-wrap">
+        <div class="compose-header-block">
+          <div class="compose-title">Create Post</div>
+          <div class="compose-subtitle">Start with the essentials, then refine the content and preview exactly what members will read.</div>
+        </div>
+        <div class="compose-grid">
+          <div class="compose-main-column">
+            <div class="compose-card">
+              <div class="compose-section-block">
+                <div class="compose-section-title">Post identity</div>
+                <div class="form-group">
+                  <label class="form-label">Title <span class="form-req">*</span></label>
+                  <input class="form-input" id="compose-title" type="text" maxlength="200" placeholder="What's your post about? Keep it specific." value="How I got my first 50 paying customers without ads" oninput="updateComposeState()">
+                  <div class="form-helper-row">
+                    <span class="helper-text">Make it clear enough that someone can decide to open it in one glance.</span>
+                    <span class="counter-text" id="title-count">56 / 200</span>
+                  </div>
+                  <div class="validation-text" id="title-validation">A title is required and must stay within 200 characters.</div>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Tags <span class="form-req">*</span> <span class="form-note">· required · choose up to 3</span></label>
+                  <div class="tag-picker" id="compose-tag-picker">
+                    <div class="tag-chip selected" data-tag="Launches" onclick="toggleComposeTag(this)">Launches</div>
+                    <div class="tag-chip" data-tag="Feedback" onclick="toggleComposeTag(this)">Feedback</div>
+                    <div class="tag-chip" data-tag="Tools" onclick="toggleComposeTag(this)">Tools</div>
+                    <div class="tag-chip" data-tag="Questions" onclick="toggleComposeTag(this)">Questions</div>
+                    <div class="tag-chip" data-tag="Hiring" onclick="toggleComposeTag(this)">Hiring</div>
+                    <div class="tag-chip" data-tag="Announcements" onclick="toggleComposeTag(this)">Announcements</div>
+                  </div>
+                  <div class="selected-tags-summary" id="selected-tags-summary">Selected tags: Launches</div>
+                  <div class="validation-text" id="tag-validation">Select between one and three tags.</div>
+                </div>
+              </div>
+              <div class="compose-section-block">
+                <div class="compose-section-title">Body</div>
+                <div class="form-group">
+                  <label class="form-label">Body <span class="form-req">*</span> <span class="form-note">· Markdown only · no raw HTML</span></label>
+                  <div class="editor-mode-tabs">
+                    <div class="editor-mode-tab active" data-editor-mode="write" onclick="setEditorMode('write')">Write</div>
+                    <div class="editor-mode-tab" data-editor-mode="preview" onclick="setEditorMode('preview')">Preview</div>
+                  </div>
+                  <div class="compose-editor-panel active" data-editor-panel="write">
+                    <div class="md-toolbar">
+                      <button class="md-btn" type="button" onclick="applyMarkdown('bold')"><strong>B</strong></button>
+                      <button class="md-btn" type="button" onclick="applyMarkdown('italic')"><em>I</em></button>
+                      <button class="md-btn" type="button" onclick="applyMarkdown('h2')">H2</button>
+                      <button class="md-btn" type="button" onclick="applyMarkdown('quote')">"</button>
+                      <button class="md-btn" type="button" onclick="applyMarkdown('ul')">• List</button>
+                      <button class="md-btn" type="button" onclick="applyMarkdown('code')">`code`</button>
+                      <button class="md-btn" type="button" onclick="applyMarkdown('mention')">@</button>
+                    </div>
+                    <textarea class="form-textarea" id="compose-body" maxlength="10000" oninput="updateComposeState()">## What worked (and what didn't)
+
+I spent the first 3 months chasing press coverage and got almost nothing back. The real progress started when I consistently posted useful answers inside niche communities.
+
+**The five channels that actually worked:**
+
+1. Commenting on relevant threads in communities like this one
+2. Writing a teardown of a competitor's pricing page
+3. Cold DMs with one concrete, personalized observation
+4. A Reddit post that hit the front page
+5. Partnering with a solo newsletter writer with 3k subscribers</textarea>
+                  </div>
+                  <div class="compose-editor-panel" data-editor-panel="preview">
+                    <div class="preview-surface" id="compose-preview"></div>
+                  </div>
+                  <div class="form-helper-row">
+                    <span class="helper-text">Use `@platformUserId` to mention members. Content is sanitized Markdown on render.</span>
+                    <span class="counter-text" id="body-count">512 / 10000</span>
+                  </div>
+                  <div class="validation-text" id="body-validation">Body is required and must stay within 10,000 characters.</div>
+                </div>
+              </div>
+              <div class="compose-alert" id="compose-alert"></div>
+              <div class="compose-footer">
+                <div>
+                  <div class="compose-note" id="char-count">Body: 512 chars · Title: 56 / 200 chars</div>
+                  <div class="compose-note mt-4">15-minute edit window after publishing. Drafts are local in this HTML prototype only.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <aside class="compose-side-column">
+            <div class="compose-side-card">
+              <div class="compose-side-title">Live checklist</div>
+              <div class="compose-side-list">
+                <div class="compose-side-item"><span>Title</span><strong id="check-title">Ready</strong></div>
+                <div class="compose-side-item"><span>Tags</span><strong id="check-tags">1 selected</strong></div>
+                <div class="compose-side-item"><span>Body</span><strong id="check-body">Ready</strong></div>
+                <div class="compose-side-item"><span>Preview</span><strong id="check-preview">Synced</strong></div>
+              </div>
+            </div>
+            <div class="compose-side-card">
+              <div class="compose-side-title">Publishing behavior</div>
+              <div class="compose-side-list">
+                <div class="compose-side-item"><span>Feed placement</span><strong>Shown immediately</strong></div>
+                <div class="compose-side-item"><span>Edit window</span><strong>15 minutes</strong></div>
+                <div class="compose-side-item"><span>Format</span><strong>Markdown only</strong></div>
+              </div>
+            </div>
+          </aside>
+        </div>
+        <div class="sticky-compose-actions">
+          <div class="btn btn-sm" onclick="saveDraft()">Save draft</div>
+          <div class="btn btn-sm" onclick="setEditorMode('preview')">Preview</div>
+          <div class="btn btn-primary btn-sm" onclick="publishPost()">Publish post →</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── SCREEN 4: SEARCH ── -->
+<div class="screen full-view" id="search-screen">
+  <div class="fullview-header">
+    <div class="fullview-header-left">
+      <button class="fullview-back" onclick="showScreen('feed-screen')">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+        Back to Forum
+      </button>
+      <span class="fullview-context">Search</span>
+    </div>
+  </div>
+  <div class="search-screen-shell">
+  <div class="search-wrap">
+    <div class="search-header-block">
+      <div>
+        <div class="search-title">Search</div>
+        <div class="search-subtitle">Find posts by title and content within the current community only.</div>
+      </div>
+      <span class="badge badge-blue">RZ Team only</span>
+    </div>
+    <div class="search-bar-wrap">
+      <input class="search-input-big" type="text" value="pricing enterprise ghosting" id="search-input" oninput="filterSearchResults()">
+      <div class="btn btn-primary" onclick="filterSearchResults()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+        Search
+      </div>
+    </div>
+    <div class="search-filters">
+      <span class="search-filter-label">Filter by tag:</span>
+      <div class="tag-chip selected" data-search-tag="All" style="font-size:12px;padding:4px 10px" onclick="setSearchTag(this)">All</div>
+      <div class="tag-chip" data-search-tag="Feedback" style="font-size:12px;padding:4px 10px" onclick="setSearchTag(this)">Feedback</div>
+      <div class="tag-chip" data-search-tag="Questions" style="font-size:12px;padding:4px 10px" onclick="setSearchTag(this)">Questions</div>
+      <div class="tag-chip" data-search-tag="Tools" style="font-size:12px;padding:4px 10px" onclick="setSearchTag(this)">Tools</div>
+      <div class="tag-chip" data-search-tag="Launches" style="font-size:12px;padding:4px 10px" onclick="setSearchTag(this)">Launches</div>
+    </div>
+    <div class="search-meta-row">
+      <div style="font-size:12.5px;color:var(--text-secondary);margin-bottom:0" id="search-results-meta">3 results for <strong>"pricing enterprise ghosting"</strong> · scoped to RZ Team only</div>
+      <span class="text-muted" id="search-results-count">3 visible</span>
+    </div>
+
+    <div class="search-results-card">
+      <div class="search-result" data-search-tag="Feedback" data-search-text="pricing enterprise ghosting feedback demo" onclick="showScreen('thread-screen')">
+        <div class="flex items-center gap-8" style="margin-bottom:6px">
+          <span class="badge badge-teal">Feedback</span>
+          <span class="meta-text">m_khan · 5h ago · 18 replies</span>
+        </div>
+        <div class="search-result-title">How do you handle <span class="highlight">pricing</span> conversations with <span class="highlight">enterprise</span> leads who <span class="highlight">ghost</span> after the demo?</div>
+        <div class="search-result-excerpt">Had three promising demos last week, all went quiet. Our <span class="highlight">pricing</span> is $400/mo for teams — wondering if the page is scaring them off...</div>
+        <div class="flex items-center gap-8"><span class="meta-text">▲ 31 upvotes</span><span class="meta-dot">·</span><span class="meta-text">18 replies</span></div>
+      </div>
+      <div class="search-result" data-search-tag="Questions" data-search-text="pricing enterprise seat based questions tier" onclick="showScreen('thread-screen')">
+        <div class="flex items-center gap-8" style="margin-bottom:6px">
+          <span class="badge badge-amber">Questions</span>
+          <span class="meta-text">alex_d · 2d ago · 5 replies</span>
+        </div>
+        <div class="search-result-title">Anyone moved from usage-based to seat-based <span class="highlight">pricing</span> for an <span class="highlight">enterprise</span> tier?</div>
+        <div class="search-result-excerpt">We're seeing <span class="highlight">enterprise</span> prospects balk at unpredictable bills. Considering a flat seat model instead...</div>
+        <div class="flex items-center gap-8"><span class="meta-text">▲ 14 upvotes</span><span class="meta-dot">·</span><span class="meta-text">5 replies</span></div>
+      </div>
+      <div class="search-result" data-search-tag="Launches" data-search-text="launches enterprise pricing ghosting page reasoning" onclick="showScreen('thread-screen')">
+        <div class="flex items-center gap-8" style="margin-bottom:6px">
+          <span class="badge badge-blue">Launches</span>
+          <span class="meta-text">yuki_m · 1w ago · 9 replies</span>
+        </div>
+        <div class="search-result-title">Launched our <span class="highlight">enterprise</span> plan — here's our <span class="highlight">pricing</span> page and the reasoning behind it</div>
+        <div class="search-result-excerpt">After months of <span class="highlight">ghosting</span> from large accounts, we redesigned the page with fewer choices and a clear "Talk to us" CTA...</div>
+        <div class="flex items-center gap-8"><span class="meta-text">▲ 22 upvotes</span><span class="meta-dot">·</span><span class="meta-text">9 replies</span></div>
+      </div>
+    </div>
+    <div class="search-empty" id="search-empty-state">No posts match the current query and tag filter.</div>
+    <div class="search-footer">Full-text search via Postgres tsvector + GIN index · Results from RZ Team only · No cross-community leakage</div>
+  </div>
+  </div>
+</div>
+
+<!-- ── SCREEN 5: MODERATION ── -->
+<div class="screen full-view" id="mod-screen">
+  <div class="fullview-header">
+    <div class="fullview-header-left">
+      <button class="fullview-back" onclick="showScreen('feed-screen')">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+        Back to Forum
+      </button>
+      <span class="fullview-context">Moderation</span>
+      <span class="fullview-badge">MODERATOR</span>
+    </div>
+    <div class="fullview-header-right">
+      <div class="user-avatar" style="background:#fef3c7;color:#b45309">KT</div>
+    </div>
+  </div>
+
+  <div class="mod-wrap">
+    <div class="mod-sidebar">
+      <div class="fsb-label">Queue</div>
+      <div class="fsb-item active" data-mod-filter="all" onclick="setModFilter(this)">
+        All items
+        <span class="fsb-count" style="background:#fee2e2;color:#dc2626" id="mod-count-all">5</span>
+      </div>
+      <div class="fsb-item" data-mod-filter="hidden" onclick="setModFilter(this)">
+        Hidden replies
+        <span class="fsb-count" style="background:#fee2e2;color:#dc2626" id="mod-count-hidden">2</span>
+      </div>
+      <div class="fsb-item" data-mod-filter="pinned" onclick="setModFilter(this)">
+        Pinned posts
+        <span class="fsb-count" style="background:#fef3c7;color:#b45309" id="mod-count-pinned">1</span>
+      </div>
+      <div class="fsb-item" data-mod-filter="locked" onclick="setModFilter(this)">
+        Locked threads
+        <span class="fsb-count" style="background:#fef3c7;color:#b45309" id="mod-count-locked">1</span>
+      </div>
+      <div class="fsb-item" data-mod-filter="tags" onclick="setModFilter(this)">
+        Tag overrides
+        <span class="fsb-count" id="mod-count-tags">1</span>
+      </div>
+      <div class="fsb-divider"></div>
+      <div class="fsb-label">Tools</div>
+      <div class="fsb-item">Manage tags</div>
+      <div class="fsb-item">Member roles</div>
+      <div class="fsb-item">Audit log</div>
+    </div>
+
+    <div class="mod-main">
+      <div class="mod-filter-tabs">
+        <div class="mod-filter-tab active" data-mod-filter="all" onclick="setModFilter(this)">All items</div>
+        <div class="mod-filter-tab" data-mod-filter="hidden" onclick="setModFilter(this)">Hidden replies</div>
+        <div class="mod-filter-tab" data-mod-filter="pinned" onclick="setModFilter(this)">Pinned posts</div>
+        <div class="mod-filter-tab" data-mod-filter="locked" onclick="setModFilter(this)">Locked threads</div>
+      </div>
+      <div class="mod-topbar">
+        <div>
+          <h2>Active moderation items</h2>
+          <p>Review the queue, act on pinned or locked threads, and keep visible records of overrides.</p>
+        </div>
+        <div class="text-muted" id="mod-summary-text">5 items visible</div>
+      </div>
+      <div class="mod-summary">
+        <div class="mod-summary-card">
+          <div class="mod-summary-label">Hidden replies</div>
+          <div class="mod-summary-value" id="mod-summary-hidden">2</div>
+          <div class="mod-summary-note">Awaiting restore or deletion</div>
+        </div>
+        <div class="mod-summary-card">
+          <div class="mod-summary-label">Pinned posts</div>
+          <div class="mod-summary-value" id="mod-summary-pinned">1</div>
+          <div class="mod-summary-note">Always shown at top of feed</div>
+        </div>
+        <div class="mod-summary-card">
+          <div class="mod-summary-label">Locked threads</div>
+          <div class="mod-summary-value" id="mod-summary-locked">1</div>
+          <div class="mod-summary-note">Rejecting new replies</div>
+        </div>
+      </div>
+
+      <!-- Hidden replies -->
+      <div class="mod-section" data-mod-section="hidden">
+      <div style="font-size:12px;font-weight:600;color:var(--text-secondary);margin-bottom:8px;text-transform:uppercase;letter-spacing:.04em">Hidden replies</div>
+      <div class="mod-card">
+        <div class="mod-row">
+          <div class="mod-indicator" style="background:#ef4444"></div>
+          <div class="mod-info">
+            <div class="mod-title">Reply by anon_user — "This is just a GPT wrapper, nothing special"</div>
+            <div class="mod-by">Hidden by you · 1h ago · on "Just launched: Quillr..."</div>
+          </div>
+          <div class="mod-btns">
+            <div class="btn btn-xs">Restore</div>
+            <div class="btn btn-xs btn-danger">Delete</div>
+          </div>
+        </div>
+        <div class="mod-row">
+          <div class="mod-indicator" style="background:#ef4444"></div>
+          <div class="mod-info">
+            <div class="mod-title">Reply by spambot_22 — "🔥 Make $500/day with this method..."</div>
+            <div class="mod-by">Hidden by you · 3h ago · on "My 2026 indie stack..."</div>
+          </div>
+          <div class="mod-btns">
+            <div class="btn btn-xs">Restore</div>
+            <div class="btn btn-xs btn-danger">Delete</div>
+          </div>
+        </div>
+      </div>
+      </div>
+
+      <!-- Pinned & locked -->
+      <div class="mod-section" data-mod-section="pinned locked">
+      <div style="font-size:12px;font-weight:600;color:var(--text-secondary);margin-bottom:8px;margin-top:16px;text-transform:uppercase;letter-spacing:.04em">Pinned & locked</div>
+      <div class="mod-card">
+        <div class="mod-row">
+          <div class="mod-indicator" style="background:#f59e0b"></div>
+          <div class="mod-info">
+            <div class="mod-title">📌 Just launched: Quillr — an AI writing sidekick...</div>
+            <div class="mod-by">Pinned by you · 3h ago · 24 replies</div>
+          </div>
+          <div class="mod-btns">
+            <div class="btn btn-xs">Unpin</div>
+          </div>
+        </div>
+        <div class="mod-row">
+          <div class="mod-indicator" style="background:#ef4444"></div>
+          <div class="mod-info">
+            <div class="mod-title">🔒 Just launched: Quillr — thread locked</div>
+            <div class="mod-by">Locked by you · 1h ago · replies disabled</div>
+          </div>
+          <div class="mod-btns">
+            <div class="btn btn-xs">Unlock</div>
+          </div>
+        </div>
+      </div>
+      </div>
+
+      <!-- Tag overrides -->
+      <div class="mod-section" data-mod-section="tags">
+      <div style="font-size:12px;font-weight:600;color:var(--text-secondary);margin-bottom:8px;margin-top:16px;text-transform:uppercase;letter-spacing:.04em">Tag overrides</div>
+      <div class="mod-card">
+        <div class="mod-row">
+          <div class="mod-indicator" style="background:#10b981"></div>
+          <div class="mod-info">
+            <div class="mod-title">Tag changed: "Announcements" → "Launches" on post by new_member_22</div>
+            <div class="mod-by">Changed by mod_alex · 6h ago</div>
+          </div>
+          <div class="mod-btns">
+            <div class="btn btn-xs">Revert</div>
+          </div>
+        </div>
+      </div>
+      </div>
+
+      <!-- Quick actions -->
+      <div class="quick-actions">
+        <div class="quick-title">Quick actions</div>
+        <div class="quick-grid">
+          <div class="quick-btn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            Pin a post
+          </div>
+          <div class="quick-btn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+            Lock a thread
+          </div>
+          <div class="quick-btn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24M1 1l22 22"/></svg>
+            Hide a reply
+          </div>
+          <div class="quick-btn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+            Remove tag
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /main -->
+</div><!-- /app -->
+
+<script>
+  const FULL_VIEW_SCREENS = new Set(['thread-screen', 'compose-screen', 'search-screen', 'mod-screen']);
+
+  function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    document.body.classList.toggle('focus-mode', FULL_VIEW_SCREENS.has(id));
+    // update sidebar active child
+    document.querySelectorAll('.sidebar-child').forEach(c => c.classList.remove('active'));
+    if (id === 'feed-screen' || id === 'thread-screen' || id === 'compose-screen' || id === 'search-screen' || id === 'mod-screen') {
+      document.getElementById('forum-nav-item').classList.add('active');
+    }
+    if (id === 'compose-screen') updateComposeState();
+  }
+
+  function toggleGroup(header) {
+    header.classList.toggle('open');
+    const children = header.nextElementSibling;
+    children.style.display = children.style.display === 'none' ? '' : 'none';
+  }
+
+  function selectTag(chip) {
+    const parent = chip.parentElement;
+    parent.querySelectorAll('.tag-chip').forEach(c => c.classList.remove('selected'));
+    chip.classList.add('selected');
+  }
+
+  function toggleVote(btn) {
+    const col = btn.closest('.vote-col');
+    const upBtn = col.querySelector('.vote-btn:first-child');
+    const countEl = col.querySelector('.vote-count');
+    let count = parseInt(countEl.textContent);
+    if (upBtn.classList.contains('upvoted')) {
+      upBtn.classList.remove('upvoted');
+      countEl.classList.remove('upvoted');
+      countEl.textContent = count - 1;
+    } else {
+      upBtn.classList.add('upvoted');
+      countEl.classList.add('upvoted');
+      countEl.textContent = count + 1;
+    }
+  }
+
+  function toggleDownvote(btn) {
+    const col = btn.closest('.vote-col');
+    const upBtn = col.querySelector('.vote-btn:first-child');
+    const countEl = col.querySelector('.vote-count');
+    if (upBtn.classList.contains('upvoted')) {
+      upBtn.classList.remove('upvoted');
+      countEl.classList.remove('upvoted');
+      countEl.textContent = parseInt(countEl.textContent) - 1;
+    }
+  }
+
+  function setFeedTab(el, name) {
+    document.querySelectorAll('.feed-sort-tab').forEach(i => i.classList.remove('active'));
+    el.classList.add('active');
+    const period = document.querySelector('.feed-tab.active')?.textContent || 'Today';
+    document.getElementById('feed-period-label').textContent = name + ' · ' + period;
+  }
+
+  function switchFeedPeriod(el, period) {
+    document.querySelectorAll('.feed-tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    const activeTab = document.querySelector('.feed-sort-tab.active')?.textContent?.trim() || 'Hot';
+    document.getElementById('feed-period-label').textContent = activeTab + ' · ' + period;
+  }
+
+  function toggleFilterChip(chip) {
+    const group = chip.parentElement;
+    group.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+    chip.classList.add('active');
+  }
+
+  function setEditorMode(mode) {
+    document.querySelectorAll('.editor-mode-tab').forEach(tab => {
+      tab.classList.toggle('active', tab.dataset.editorMode === mode);
+    });
+    document.querySelectorAll('.compose-editor-panel').forEach(panel => {
+      panel.classList.toggle('active', panel.dataset.editorPanel === mode);
+    });
+    if (mode === 'preview') renderComposePreview();
+  }
+
+  function toggleComposeTag(chip) {
+    const selected = document.querySelectorAll('#compose-tag-picker .tag-chip.selected');
+    if (chip.classList.contains('selected')) {
+      chip.classList.remove('selected');
+    } else if (selected.length < 3) {
+      chip.classList.add('selected');
+    } else {
+      showComposeAlert('You can select up to three tags for a post. This cap comes from the requirements, so the UI prevents a fourth tag.');
+    }
+    updateComposeState();
+  }
+
+  function updateComposeState() {
+    const title = document.getElementById('compose-title');
+    const body = document.getElementById('compose-body');
+    if (!title || !body) return;
+    const selectedTags = Array.from(document.querySelectorAll('#compose-tag-picker .tag-chip.selected')).map(chip => chip.dataset.tag);
+    const titleValid = title.value.trim().length > 0 && title.value.length <= 200;
+    const bodyValid = body.value.trim().length > 0 && body.value.length <= 10000;
+    const tagsValid = selectedTags.length >= 1 && selectedTags.length <= 3;
+    document.getElementById('title-count').textContent = `${title.value.length} / 200`;
+    document.getElementById('body-count').textContent = `${body.value.length} / 10000`;
+    document.getElementById('char-count').textContent = `Body: ${body.value.length} chars · Title: ${title.value.length} / 200 chars`;
+    document.getElementById('selected-tags-summary').textContent = selectedTags.length
+      ? `Selected tags: ${selectedTags.join(', ')}`
+      : 'Selected tags: none';
+    title.classList.toggle('invalid', !titleValid);
+    body.classList.toggle('invalid', !bodyValid);
+    document.getElementById('title-validation').classList.toggle('visible', !titleValid);
+    document.getElementById('body-validation').classList.toggle('visible', !bodyValid);
+    document.getElementById('tag-validation').classList.toggle('visible', !tagsValid);
+    document.getElementById('check-title').textContent = titleValid ? 'Ready' : 'Needs work';
+    document.getElementById('check-tags').textContent = tagsValid ? `${selectedTags.length} selected` : 'Required';
+    document.getElementById('check-body').textContent = bodyValid ? 'Ready' : 'Needs work';
+    document.getElementById('check-preview').textContent = 'Synced';
+    updateComposeSteps({ titleValid, bodyValid, tagsValid });
+    renderComposePreview();
+  }
+
+  function updateComposeSteps(state) {
+    const steps = document.querySelectorAll('.compose-step');
+    steps.forEach(step => step.classList.remove('active'));
+    if (!state.titleValid || !state.tagsValid) {
+      steps[0]?.classList.add('active');
+      return;
+    }
+    if (!state.bodyValid) {
+      steps[1]?.classList.add('active');
+      return;
+    }
+    steps[2]?.classList.add('active');
+  }
+
+  function renderComposePreview() {
+    const preview = document.getElementById('compose-preview');
+    const body = document.getElementById('compose-body');
+    if (!preview || !body) return;
+    preview.innerHTML = markdownToHtml(body.value || '');
+  }
+
+  function markdownToHtml(markdown) {
+    let html = escapeHtml(markdown);
+    html = html.replace(/^### (.*)$/gm, '<h3>$1</h3>');
+    html = html.replace(/^## (.*)$/gm, '<h2>$1</h2>');
+    html = html.replace(/^# (.*)$/gm, '<h1>$1</h1>');
+    html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
+    html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+    html = html.replace(/^> (.*)$/gm, '<blockquote>$1</blockquote>');
+    html = html.replace(/^\d+\.\s+(.*)$/gm, '<li>$1</li>');
+    html = html.replace(/^- (.*)$/gm, '<li>$1</li>');
+    html = html.replace(/(<li>.*<\/li>)/gs, match => `<ul>${match}</ul>`.replace(/<\/ul>\s*<ul>/g, ''));
+    html = html.replace(/\n{2,}/g, '</p><p>');
+    html = `<p>${html}</p>`;
+    html = html.replace(/<p><\/p>/g, '');
+    return html;
+  }
+
+  function escapeHtml(text) {
+    return text
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+  }
+
+  function applyMarkdown(type) {
+    const body = document.getElementById('compose-body');
+    if (!body) return;
+    const start = body.selectionStart;
+    const end = body.selectionEnd;
+    const selected = body.value.slice(start, end) || 'text';
+    let replacement = selected;
+    if (type === 'bold') replacement = `**${selected}**`;
+    if (type === 'italic') replacement = `*${selected}*`;
+    if (type === 'h2') replacement = `## ${selected}`;
+    if (type === 'quote') replacement = `> ${selected}`;
+    if (type === 'ul') replacement = `- ${selected}`;
+    if (type === 'code') replacement = `\`${selected}\``;
+    if (type === 'mention') replacement = `@${selected.replace(/\s+/g, '')}`;
+    body.setRangeText(replacement, start, end, 'end');
+    body.focus();
+    updateComposeState();
+  }
+
+  function showComposeAlert(message) {
+    const alertBox = document.getElementById('compose-alert');
+    alertBox.textContent = message;
+    alertBox.classList.add('visible');
+  }
+
+  function clearComposeAlert() {
+    const alertBox = document.getElementById('compose-alert');
+    alertBox.textContent = '';
+    alertBox.classList.remove('visible');
+  }
+
+  function saveDraft() {
+    const draft = {
+      title: document.getElementById('compose-title').value,
+      body: document.getElementById('compose-body').value,
+      tags: Array.from(document.querySelectorAll('#compose-tag-picker .tag-chip.selected')).map(chip => chip.dataset.tag)
+    };
+    localStorage.setItem('skep-forum-draft', JSON.stringify(draft));
+    clearComposeAlert();
+    showComposeAlert('Draft saved locally in this prototype. The requirements mark autosave as a "should have", so this is intentionally limited to browser storage.');
+  }
+
+  function loadDraft() {
+    const raw = localStorage.getItem('skep-forum-draft');
+    if (!raw) return;
+    try {
+      const draft = JSON.parse(raw);
+      const title = document.getElementById('compose-title');
+      const body = document.getElementById('compose-body');
+      if (draft.title) title.value = draft.title;
+      if (draft.body) body.value = draft.body;
+      document.querySelectorAll('#compose-tag-picker .tag-chip').forEach(chip => {
+        chip.classList.toggle('selected', (draft.tags || []).includes(chip.dataset.tag));
+      });
+      updateComposeState();
+    } catch (error) {
+      console.error('Could not load draft', error);
+    }
+  }
+
+  function publishPost() {
+    clearComposeAlert();
+    const title = document.getElementById('compose-title').value.trim();
+    const body = document.getElementById('compose-body').value.trim();
+    const selectedTags = Array.from(document.querySelectorAll('#compose-tag-picker .tag-chip.selected')).map(chip => chip.dataset.tag);
+
+    if (!title) return showComposeAlert('Title is required.');
+    if (title.length > 200) return showComposeAlert('Title exceeds the 200 character limit.');
+    if (!body) return showComposeAlert('Body is required.');
+    if (body.length > 10000) return showComposeAlert('Body exceeds the 10,000 character limit.');
+    if (selectedTags.length < 1) return showComposeAlert('Select at least one tag before publishing.');
+    if (selectedTags.length > 3) return showComposeAlert('Only up to three tags are allowed.');
+
+    addPostToFeed({ title, body, tag: selectedTags[0] });
+    localStorage.removeItem('skep-forum-draft');
+    showScreen('feed-screen');
+  }
+
+  function addPostToFeed(post) {
+    const forumCenter = document.querySelector('#feed-screen .forum-center');
+    const toolbar = forumCenter.querySelector('.feed-toolbar');
+    const safeTitle = escapeHtml(post.title);
+    const safeExcerpt = escapeHtml(post.body.slice(0, 220)) + (post.body.length > 220 ? '...' : '');
+    const badgeClass = getBadgeClass(post.tag);
+    const card = document.createElement('div');
+    card.className = 'post-card';
+    card.innerHTML = `
+      <div class="vote-col">
+        <div class="vote-btn" onclick="toggleVote(this)">▲</div>
+        <div class="vote-count">0</div>
+        <div class="vote-btn" onclick="toggleDownvote(this)">▼</div>
+      </div>
+      <div class="post-main">
+        <div class="post-top">
+          <span class="badge ${badgeClass}">${escapeHtml(post.tag)}</span>
+        </div>
+        <div class="post-title" onclick="showScreen('thread-screen')">${safeTitle}</div>
+        <div class="post-meta">
+          <div class="avatar-xs" style="background:#dbeafe;color:#1d4ed8">KT</div>
+          <span class="meta-text">kashish_t</span>
+          <span class="meta-dot">·</span>
+          <span class="meta-text">RZ Team</span>
+          <span class="meta-dot">·</span>
+          <span class="meta-text">Just now</span>
+          <span class="meta-dot">·</span>
+          <span class="meta-text">0 replies</span>
+        </div>
+        <div class="post-excerpt">${safeExcerpt.replace(/\n/g, '<br>')}</div>
+        <div class="post-actions">
+          <div class="action-btn" onclick="showScreen('thread-screen')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+            0 replies
+          </div>
+          <div class="action-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8M16 6l-4-4-4 4M12 2v13"/></svg>
+            Share
+          </div>
+          <div class="action-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
+            Save
+          </div>
+        </div>
+      </div>
+    `;
+    forumCenter.insertBefore(card, toolbar.nextSibling);
+  }
+
+  function getBadgeClass(tag) {
+    const map = {
+      Launches: 'badge-blue',
+      Feedback: 'badge-teal',
+      Tools: 'badge-purple',
+      Questions: 'badge-amber',
+      Hiring: 'badge-red',
+      Announcements: 'badge-pink'
+    };
+    return map[tag] || 'badge-gray';
+  }
+
+  function setModFilter(tab) {
+    const filter = tab.dataset.modFilter || 'all';
+    document.querySelectorAll('.mod-filter-tab').forEach(item => item.classList.toggle('active', item.dataset.modFilter === filter));
+    document.querySelectorAll('.mod-sidebar .fsb-item').forEach(item => item.classList.toggle('active', item.dataset.modFilter === filter));
+    document.querySelectorAll('.mod-section').forEach(section => {
+      const sectionFilters = (section.dataset.modSection || '').split(' ');
+      const visible = filter === 'all' || sectionFilters.includes(filter);
+      section.classList.toggle('hidden', !visible);
+    });
+    updateModerationSummary(filter);
+  }
+
+  function updateModerationSummary(filter = 'all') {
+    const visibleSections = Array.from(document.querySelectorAll('.mod-section')).filter(section => !section.classList.contains('hidden'));
+    const visibleRows = visibleSections.reduce((count, section) => count + section.querySelectorAll('.mod-row').length, 0);
+    document.getElementById('mod-summary-text').textContent = `${visibleRows} items visible`;
+  }
+
+  function setSearchTag(chip) {
+    chip.parentElement.querySelectorAll('.tag-chip').forEach(item => item.classList.remove('selected'));
+    chip.classList.add('selected');
+    filterSearchResults();
+  }
+
+  function filterSearchResults() {
+    const query = document.getElementById('search-input')?.value.trim().toLowerCase() || '';
+    const selectedTag = document.querySelector('[data-search-tag].selected')?.dataset.searchTag || 'All';
+    const results = Array.from(document.querySelectorAll('.search-result'));
+    let visibleCount = 0;
+    results.forEach(result => {
+      const tagMatch = selectedTag === 'All' || result.dataset.searchTag === selectedTag;
+      const queryMatch = !query || (result.dataset.searchText || '').includes(query);
+      const visible = tagMatch && queryMatch;
+      result.classList.toggle('hidden', !visible);
+      if (visible) visibleCount += 1;
+    });
+    document.getElementById('search-results-count').textContent = `${visibleCount} visible`;
+    document.getElementById('search-empty-state').classList.toggle('visible', visibleCount === 0);
+    document.getElementById('search-results-meta').innerHTML = `${visibleCount} results for <strong>"${escapeHtml(document.getElementById('search-input').value)}"</strong> · scoped to RZ Team only`;
+  }
+
+  function bindPrototypeButtons() {
+    document.querySelectorAll('.mod-btns .btn, .quick-btn').forEach(button => {
+      button.addEventListener('click', () => {
+        if (button.classList.contains('btn-danger')) {
+          button.textContent = 'Deleted';
+          return;
+        }
+        const text = button.textContent.trim();
+        if (text === 'Restore') button.textContent = 'Restored';
+        else if (text === 'Unpin') button.textContent = 'Pinned';
+        else if (text === 'Unlock') button.textContent = 'Locked';
+        else if (text === 'Revert') button.textContent = 'Reverted';
+        else if (button.classList.contains('quick-btn')) button.textContent = `${text} opened`;
+      });
+    });
+  }
+
+  loadDraft();
+  updateComposeState();
+  bindPrototypeButtons();
+  filterSearchResults();
+  updateModerationSummary();
+  showScreen('feed-screen');
+</script>
+</body>
+</html>

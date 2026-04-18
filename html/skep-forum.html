@@ -1,0 +1,1316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SKEP Forum — Indie Founders</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navy: #1a1f2e;
+    --navy-hover: #252b3b;
+    --blue: #3b6ef5;
+    --blue-light: #e8effe;
+    --blue-mid: #b8ccfc;
+    --page-bg: #f3f4f8;
+    --sidebar-bg: #ffffff;
+    --card-bg: #ffffff;
+    --border: #e5e7ef;
+    --border-light: #eef0f6;
+    --text-primary: #111827;
+    --text-secondary: #6b7280;
+    --text-muted: #9ca3af;
+    --text-blue: #3b6ef5;
+    --green: #10b981;
+    --green-light: #ecfdf5;
+    --amber: #f59e0b;
+    --amber-light: #fffbeb;
+    --red: #ef4444;
+    --red-light: #fef2f2;
+    --purple: #8b5cf6;
+    --purple-light: #f5f3ff;
+    --pink: #ec4899;
+    --pink-light: #fdf2f8;
+    --teal: #14b8a6;
+    --teal-light: #f0fdfa;
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 14px;
+    --radius-xl: 18px;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+    --font: 'Inter', -apple-system, sans-serif;
+  }
+
+  html, body { height: 100%; font-family: var(--font); font-size: 14px; color: var(--text-primary); background: var(--page-bg); }
+
+  /* ─── LAYOUT ─── */
+  .app { display: flex; height: 100vh; overflow: hidden; }
+
+  /* ─── TOPBAR (dark navy strip) ─── */
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0; height: 48px; z-index: 100;
+    background: var(--navy); display: flex; align-items: center; padding: 0 16px; gap: 12px;
+  }
+  .topbar-brand { display: flex; align-items: center; gap: 10px; }
+  .brand-avatar {
+    width: 30px; height: 30px; border-radius: 8px; background: #3b6ef5;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; color: #fff; flex-shrink: 0;
+  }
+  .brand-name { font-size: 14px; font-weight: 600; color: #fff; }
+  .brand-chevron { color: #6b7280; font-size: 12px; margin-left: 2px; }
+  .topbar-sep { width: 1px; height: 20px; background: #374151; }
+  .topbar-back {
+    display: none; align-items: center; gap: 6px;
+    color: #fff; font-size: 13.5px; font-weight: 500; cursor: pointer;
+    padding: 6px 12px; border-radius: 6px; user-select: none;
+  }
+  .topbar-back:hover { background: rgba(255,255,255,0.08); }
+
+  /* ─── FULLSCREEN VIEW (for Moderation) ─── */
+  body.fullscreen-view .sidebar { display: none; }
+  body.fullscreen-view .main { margin-left: 0; }
+  body.fullscreen-view .topbar-brand { display: none; }
+  body.fullscreen-view .topbar-back { display: inline-flex; }
+
+  /* ─── SIDEBAR ─── */
+  .sidebar {
+    width: 248px; flex-shrink: 0; background: var(--sidebar-bg);
+    border-right: 1px solid var(--border); margin-top: 48px;
+    display: flex; flex-direction: column; height: calc(100vh - 48px);
+    overflow-y: auto; position: fixed; left: 0; top: 0;
+  }
+  .sidebar::-webkit-scrollbar { width: 0; }
+  .sidebar-inner { flex: 1; padding: 12px 0; }
+  .sidebar-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 16px; font-size: 13.5px; color: var(--text-secondary);
+    cursor: pointer; border-radius: 0; transition: background .15s; user-select: none;
+  }
+  .sidebar-item:hover { background: var(--page-bg); }
+  .sidebar-item.active { background: var(--blue-light); color: var(--blue); font-weight: 500; }
+  .sidebar-item svg { flex-shrink: 0; opacity: .7; }
+  .sidebar-item.active svg { opacity: 1; }
+  .sidebar-item-dots { margin-left: auto; color: var(--text-muted); font-size: 16px; }
+  .sidebar-group { margin-top: 4px; }
+  .sidebar-group-header {
+    display: flex; align-items: center; gap: 10px; padding: 8px 16px;
+    font-size: 13.5px; color: var(--text-primary); font-weight: 500; cursor: pointer;
+  }
+  .sidebar-group-header:hover { background: var(--page-bg); }
+  .sidebar-group-header .chev { margin-left: auto; transition: transform .2s; }
+  .sidebar-group-header.open .chev { transform: rotate(180deg); }
+  .sidebar-child {
+    display: flex; align-items: center; gap: 10px; padding: 7px 16px 7px 40px;
+    font-size: 13px; color: var(--text-secondary); cursor: pointer;
+  }
+  .sidebar-child:hover { background: var(--page-bg); }
+  .sidebar-child.active { color: var(--blue); font-weight: 500; background: var(--blue-light); }
+  .sidebar-divider { border: none; border-top: 1px solid var(--border-light); margin: 8px 0; }
+  .sidebar-footer { padding: 12px 16px; border-top: 1px solid var(--border-light); }
+  .sidebar-user { display: flex; align-items: center; gap: 10px; padding: 6px 0; cursor: pointer; }
+  .sidebar-settings { display: flex; align-items: center; gap: 10px; padding: 8px 0; font-size: 13px; color: var(--text-secondary); cursor: pointer; }
+  .user-avatar {
+    width: 30px; height: 30px; border-radius: 50%; background: #dbeafe;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 600; color: var(--blue); flex-shrink: 0;
+  }
+  .user-name { font-size: 13px; font-weight: 500; }
+  .user-dots { margin-left: auto; color: var(--text-muted); }
+
+  /* ─── MAIN CONTENT ─── */
+  .main { margin-left: 248px; margin-top: 48px; flex: 1; overflow-y: auto; display: flex; flex-direction: column; }
+  .screen { display: none; flex: 1; }
+  .screen.active { display: flex; flex-direction: column; }
+
+  /* ─── CONTENT HEADER ─── */
+  .content-header {
+    background: #fff; border-bottom: 1px solid var(--border);
+    padding: 0 24px; height: 56px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;
+  }
+  .content-header-title { font-size: 17px; font-weight: 600; }
+  .content-header-right { display: flex; align-items: center; gap: 10px; }
+
+  /* ─── FORUM FEED LAYOUT ─── */
+  .forum-body { display: flex; flex: 1; min-height: 0; overflow-y: auto; }
+  .forum-center { flex: 1; padding: 0; }
+  .forum-inner { width: 100%; max-width: 760px; padding: 16px 0 24px; }
+
+  /* Forum secondary sidebar (still used in moderation screen) */
+  .fsb-label { font-size: 10px; font-weight: 600; color: var(--text-muted); letter-spacing: .06em; text-transform: uppercase; padding: 4px 16px 6px; }
+  .fsb-item {
+    display: flex; align-items: center; gap: 8px; padding: 7px 16px;
+    font-size: 13px; color: var(--text-secondary); cursor: pointer;
+  }
+  .fsb-item:hover { background: var(--page-bg); }
+  .fsb-item.active { background: var(--blue-light); color: var(--blue); font-weight: 500; }
+  .fsb-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .fsb-count { margin-left: auto; font-size: 11px; color: var(--text-muted); background: var(--page-bg); padding: 1px 6px; border-radius: 20px; }
+  .fsb-divider { border: none; border-top: 1px solid var(--border-light); margin: 8px 0; }
+
+  /* ─── FORUM TOOLBAR (tabs + pills) ─── */
+  .forum-toolbar { display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px; }
+  .toolbar-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+
+  .sort-tabs {
+    display: inline-flex; gap: 2px; background: var(--page-bg);
+    padding: 3px; border-radius: 10px; border: 1px solid var(--border);
+  }
+  .sort-tab {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 13px; padding: 6px 14px; border-radius: 7px;
+    cursor: pointer; color: var(--text-secondary); transition: all .15s;
+    user-select: none; border: none; background: transparent; font-family: var(--font);
+  }
+  .sort-tab:hover { color: var(--text-primary); }
+  .sort-tab.active { background: #fff; color: var(--text-primary); font-weight: 600; box-shadow: var(--shadow-sm); }
+  .sort-tab svg { width: 13px; height: 13px; }
+
+  .feed-tabs { display: inline-flex; gap: 2px; background: var(--page-bg); padding: 3px; border-radius: 8px; border: 1px solid var(--border); }
+  .feed-tab { font-size: 12.5px; padding: 5px 12px; border-radius: 6px; cursor: pointer; color: var(--text-secondary); user-select: none; border: none; background: transparent; font-family: var(--font); }
+  .feed-tab.active { background: #fff; color: var(--text-primary); font-weight: 500; box-shadow: var(--shadow-sm); }
+
+  .tag-pills { display: flex; gap: 8px; flex-wrap: wrap; }
+  .tag-pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 12.5px; padding: 5px 12px; border-radius: 20px;
+    border: 1px solid var(--border); background: #fff;
+    cursor: pointer; color: var(--text-secondary); transition: all .15s;
+    user-select: none; white-space: nowrap;
+  }
+  .tag-pill:hover { border-color: var(--blue-mid); color: var(--blue); background: var(--blue-light); }
+  .tag-pill.active { background: var(--blue-light); color: var(--blue); border-color: var(--blue-mid); font-weight: 500; }
+  .tag-pill .pill-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+  .tag-pill .pill-count { font-size: 11px; color: var(--text-muted); }
+  .tag-pill.active .pill-count { color: var(--blue); }
+
+  /* ─── POST CARD ─── */
+  .post-card {
+    background: #fff; border: 1px solid var(--border); border-radius: var(--radius-lg);
+    padding: 16px; margin-bottom: 10px; display: flex; gap: 12px;
+    box-shadow: var(--shadow-sm); transition: box-shadow .15s, border-color .15s;
+  }
+  .post-card:hover { box-shadow: var(--shadow-md); border-color: #d1d5e0; }
+  .vote-col { display: flex; flex-direction: column; align-items: center; gap: 4px; flex-shrink: 0; padding-top: 2px; }
+  .vote-btn {
+    width: 26px; height: 26px; display: flex; align-items: center; justify-content: center;
+    border-radius: 6px; cursor: pointer; border: 1px solid var(--border); background: #fff;
+    font-size: 11px; color: var(--text-muted); transition: all .15s;
+  }
+  .vote-btn:hover { border-color: var(--blue-mid); color: var(--blue); background: var(--blue-light); }
+  .vote-btn.upvoted { background: var(--blue-light); border-color: var(--blue-mid); color: var(--blue); }
+  .vote-count { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+  .vote-count.upvoted { color: var(--blue); }
+  .post-main { flex: 1; min-width: 0; }
+  .post-top { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 6px; flex-wrap: wrap; }
+  .post-title { font-size: 14px; font-weight: 600; color: var(--text-primary); line-height: 1.45; cursor: pointer; }
+  .post-title:hover { color: var(--blue); }
+  .post-meta { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; flex-wrap: wrap; }
+  .avatar-xs {
+    width: 20px; height: 20px; border-radius: 50%; background: var(--blue-light);
+    display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 600; color: var(--blue); flex-shrink: 0;
+  }
+  .meta-text { font-size: 12px; color: var(--text-muted); }
+  .meta-dot { font-size: 10px; color: var(--text-muted); }
+  .post-excerpt { font-size: 13px; color: var(--text-secondary); line-height: 1.55; margin-bottom: 10px; }
+  .post-actions { display: flex; align-items: center; gap: 14px; }
+  .action-btn {
+    display: flex; align-items: center; gap: 5px; font-size: 12px; color: var(--text-muted);
+    cursor: pointer; padding: 4px 0; transition: color .15s;
+  }
+  .action-btn:hover { color: var(--blue); }
+  .action-btn svg { width: 14px; height: 14px; }
+  .action-btn-spacer { margin-left: auto; }
+
+  /* ─── BADGES & TAGS ─── */
+  .badge {
+    display: inline-flex; align-items: center; font-size: 11px; font-weight: 500;
+    padding: 2px 8px; border-radius: 20px; white-space: nowrap;
+  }
+  .badge-blue { background: var(--blue-light); color: var(--blue); }
+  .badge-green { background: var(--green-light); color: #059669; }
+  .badge-amber { background: var(--amber-light); color: #d97706; }
+  .badge-red { background: var(--red-light); color: #dc2626; }
+  .badge-purple { background: var(--purple-light); color: #7c3aed; }
+  .badge-pink { background: var(--pink-light); color: #db2777; }
+  .badge-teal { background: var(--teal-light); color: #0d9488; }
+  .badge-gray { background: var(--page-bg); color: var(--text-secondary); border: 1px solid var(--border); }
+  .pinned-badge { display: inline-flex; align-items: center; gap: 3px; font-size: 11px; color: #d97706; background: var(--amber-light); border: 1px solid #fde68a; padding: 2px 7px; border-radius: 6px; }
+  .locked-badge { display: inline-flex; align-items: center; gap: 3px; font-size: 11px; color: #dc2626; background: var(--red-light); border: 1px solid #fca5a5; padding: 2px 7px; border-radius: 6px; }
+  .mod-badge { display: inline-flex; align-items: center; gap: 3px; font-size: 11px; color: #7c3aed; background: var(--purple-light); border: 1px solid #ddd6fe; padding: 2px 7px; border-radius: 6px; }
+  .op-badge { font-size: 10px; font-weight: 600; color: var(--blue); background: var(--blue-light); border: 1px solid var(--blue-mid); padding: 1px 5px; border-radius: 4px; }
+
+  /* ─── RIGHT PANEL ─── */
+  .rp-section { margin-bottom: 20px; }
+  .rp-title { font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 10px; }
+  .rp-tag-row { display: flex; align-items: center; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid var(--border-light); }
+  .rp-tag-row:last-child { border-bottom: none; }
+  .rp-count { font-size: 11px; color: var(--text-muted); }
+  .rp-member { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .rp-member-info { font-size: 12px; color: var(--text-secondary); }
+  .rp-member-sub { font-size: 11px; color: var(--text-muted); }
+  .rp-stat { display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid var(--border-light); font-size: 12px; }
+  .rp-stat:last-child { border-bottom: none; }
+  .rp-stat-val { font-weight: 600; color: var(--text-primary); }
+
+  /* ─── THREAD VIEW ─── */
+  .thread-container { max-width: 760px; padding: 24px; }
+  .thread-op {
+    background: #fff; border: 1px solid var(--border); border-radius: var(--radius-lg);
+    padding: 20px; margin-bottom: 16px; box-shadow: var(--shadow-sm);
+  }
+  .thread-op-meta { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+  .thread-op-title { font-size: 20px; font-weight: 700; line-height: 1.35; margin-bottom: 10px; }
+  .thread-body { font-size: 14px; color: var(--text-secondary); line-height: 1.7; }
+  .thread-body p { margin-bottom: 12px; }
+  .thread-body strong { color: var(--text-primary); font-weight: 600; }
+  .thread-body code { background: var(--page-bg); border: 1px solid var(--border); padding: 1px 5px; border-radius: 4px; font-size: 12.5px; font-family: monospace; }
+  .thread-actions { display: flex; align-items: center; gap: 14px; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border-light); }
+  .vote-row { display: flex; align-items: center; gap: 6px; }
+  .vote-big { display: flex; align-items: center; gap: 3px; }
+  .vote-big-btn {
+    display: flex; align-items: center; justify-content: center; padding: 4px 10px;
+    border: 1px solid var(--border); border-radius: 6px; cursor: pointer; font-size: 13px; transition: all .15s; background: #fff;
+  }
+  .vote-big-btn:hover { border-color: var(--blue-mid); background: var(--blue-light); color: var(--blue); }
+  .vote-big-btn.upvoted { border-color: var(--blue-mid); background: var(--blue-light); color: var(--blue); font-weight: 600; }
+  .replies-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-top: 1px solid var(--border-light); border-bottom: 1px solid var(--border-light); margin-bottom: 12px; }
+  .replies-count { font-size: 13px; font-weight: 600; }
+  .sort-select { font-size: 12px; color: var(--text-secondary); background: var(--page-bg); border: 1px solid var(--border); padding: 4px 8px; border-radius: 6px; cursor: pointer; }
+  .reply-card {
+    display: flex; gap: 10px; padding: 14px 0;
+    border-bottom: 1px solid var(--border-light);
+  }
+  .reply-card:last-child { border-bottom: none; }
+  .reply-avatar {
+    width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0; margin-top: 2px;
+    display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600;
+  }
+  .reply-main { flex: 1; min-width: 0; }
+  .reply-meta { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; flex-wrap: wrap; }
+  .reply-author { font-size: 13px; font-weight: 600; }
+  .reply-body { font-size: 13.5px; color: var(--text-secondary); line-height: 1.6; }
+  .reply-actions { display: flex; align-items: center; gap: 12px; margin-top: 8px; }
+  .reply-nested { margin-top: 10px; margin-left: 20px; padding-left: 16px; border-left: 2px solid var(--border); }
+  .reply-compose {
+    background: #fff; border: 1px solid var(--border); border-radius: var(--radius-lg);
+    padding: 14px; margin-top: 16px; box-shadow: var(--shadow-sm);
+  }
+  .reply-compose textarea {
+    width: 100%; min-height: 80px; border: none; background: var(--page-bg);
+    padding: 10px 12px; border-radius: var(--radius-md); font-size: 13px;
+    font-family: var(--font); color: var(--text-primary); resize: none; outline: none;
+    border: 1px solid var(--border);
+  }
+  .reply-compose textarea:focus { border-color: var(--blue); }
+  .reply-compose-actions { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; }
+  .md-hint { font-size: 11px; color: var(--text-muted); }
+  .hidden-reply { opacity: .55; }
+  .hidden-notice {
+    font-size: 12px; color: #dc2626; background: var(--red-light);
+    border: 1px solid #fca5a5; padding: 3px 8px; border-radius: 6px; display: inline-block; margin-bottom: 6px;
+  }
+  .locked-notice {
+    display: flex; align-items: center; gap: 8px; padding: 10px 16px;
+    background: var(--amber-light); border-bottom: 1px solid #fde68a; font-size: 13px; color: #92400e;
+  }
+
+  /* ─── COMPOSE ─── */
+  .compose-wrap { max-width: 700px; padding: 24px; }
+  .compose-card { background: #fff; border: 1px solid var(--border); border-radius: var(--radius-xl); padding: 24px; box-shadow: var(--shadow-sm); }
+  .form-group { margin-bottom: 18px; }
+  .form-label { display: block; font-size: 12.5px; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px; }
+  .form-req { color: var(--red); margin-left: 2px; }
+  .form-note { font-size: 11px; color: var(--text-muted); font-weight: 400; margin-left: 4px; }
+  .form-input {
+    width: 100%; padding: 9px 12px; border: 1px solid var(--border); border-radius: var(--radius-md);
+    font-size: 13.5px; font-family: var(--font); color: var(--text-primary); outline: none;
+    transition: border-color .15s; background: #fff;
+  }
+  .form-input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(59,110,245,.08); }
+  .form-textarea {
+    width: 100%; min-height: 180px; padding: 12px; border: 1px solid var(--border); border-radius: var(--radius-md);
+    font-size: 13.5px; font-family: var(--font); color: var(--text-primary); resize: vertical; outline: none;
+    transition: border-color .15s; background: #fff; line-height: 1.6;
+  }
+  .form-textarea:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(59,110,245,.08); }
+  .tag-picker { display: flex; gap: 6px; flex-wrap: wrap; }
+  .tag-chip {
+    font-size: 12.5px; padding: 5px 12px; border-radius: 20px;
+    border: 1px solid var(--border); background: var(--page-bg);
+    cursor: pointer; color: var(--text-secondary); transition: all .15s;
+  }
+  .tag-chip:hover { border-color: var(--blue-mid); color: var(--blue); }
+  .tag-chip.selected { background: var(--blue-light); color: var(--blue); border-color: var(--blue-mid); font-weight: 500; }
+  .md-toolbar { display: flex; gap: 4px; margin-bottom: 6px; }
+  .md-btn { padding: 4px 9px; font-size: 12px; border: 1px solid var(--border); border-radius: 5px; background: var(--page-bg); cursor: pointer; color: var(--text-secondary); }
+  .md-btn:hover { background: var(--border-light); }
+  .compose-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border-light); }
+  .compose-note { font-size: 12px; color: var(--text-muted); }
+
+  /* ─── SEARCH ─── */
+  .search-wrap { padding: 24px; max-width: 760px; }
+  .search-bar-wrap { display: flex; gap: 10px; margin-bottom: 16px; }
+  .search-input-big {
+    flex: 1; padding: 11px 16px; border: 1px solid var(--border); border-radius: var(--radius-lg);
+    font-size: 14px; font-family: var(--font); outline: none; background: #fff;
+    box-shadow: var(--shadow-sm);
+  }
+  .search-input-big:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(59,110,245,.08); }
+  .search-filters { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+  .search-filter-label { font-size: 12px; color: var(--text-muted); }
+  .search-results-card { background: #fff; border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-sm); }
+  .search-result { padding: 14px 16px; border-bottom: 1px solid var(--border-light); cursor: pointer; transition: background .1s; }
+  .search-result:last-child { border-bottom: none; }
+  .search-result:hover { background: var(--page-bg); }
+  .search-result-title { font-size: 14px; font-weight: 600; color: var(--text-primary); margin-bottom: 5px; line-height: 1.4; }
+  .search-result-excerpt { font-size: 12.5px; color: var(--text-secondary); line-height: 1.5; margin-bottom: 6px; }
+  .highlight { background: #fef9c3; color: #854d0e; border-radius: 2px; padding: 0 2px; }
+  .search-footer { font-size: 12px; color: var(--text-muted); margin-top: 10px; }
+
+  /* ─── MODERATION ─── */
+  .mod-wrap { display: flex; flex: 1; }
+  .mod-sidebar { width: 200px; flex-shrink: 0; border-right: 1px solid var(--border); padding: 16px 0; background: #fff; }
+  .mod-main { flex: 1; padding: 24px; overflow-y: auto; }
+  .mod-card { background: #fff; border: 1px solid var(--border); border-radius: var(--radius-lg); margin-bottom: 10px; overflow: hidden; box-shadow: var(--shadow-sm); }
+  .mod-row { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-bottom: 1px solid var(--border-light); }
+  .mod-row:last-child { border-bottom: none; }
+  .mod-indicator { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .mod-info { flex: 1; min-width: 0; }
+  .mod-title { font-size: 13px; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 2px; }
+  .mod-by { font-size: 11px; color: var(--text-muted); }
+  .mod-btns { display: flex; gap: 6px; }
+  .quick-actions { background: #fff; border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 14px; margin-top: 16px; }
+  .quick-title { font-size: 12.5px; font-weight: 600; color: var(--text-secondary); margin-bottom: 10px; }
+  .quick-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .quick-btn {
+    display: flex; align-items: center; gap: 7px; padding: 9px 12px;
+    border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--page-bg);
+    cursor: pointer; font-size: 12.5px; color: var(--text-secondary); transition: all .15s;
+  }
+  .quick-btn:hover { border-color: var(--blue-mid); color: var(--blue); background: var(--blue-light); }
+
+  /* ─── BUTTONS ─── */
+  .btn {
+    display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px;
+    border-radius: var(--radius-md); border: 1px solid var(--border); background: #fff;
+    font-size: 13px; font-family: var(--font); font-weight: 500; cursor: pointer; transition: all .15s; color: var(--text-primary);
+  }
+  .btn:hover { background: var(--page-bg); }
+  .btn-primary { background: var(--blue); border-color: var(--blue); color: #fff; }
+  .btn-primary:hover { background: #2d5ae0; border-color: #2d5ae0; }
+  .btn-danger { background: var(--red-light); border-color: #fca5a5; color: #dc2626; }
+  .btn-danger:hover { background: #fee2e2; }
+  .btn-sm { padding: 5px 10px; font-size: 12px; border-radius: var(--radius-sm); }
+  .btn-xs { padding: 3px 8px; font-size: 11px; border-radius: 5px; }
+
+  /* ─── UTILS ─── */
+  .flex { display: flex; }
+  .items-center { align-items: center; }
+  .gap-8 { gap: 8px; }
+  .gap-12 { gap: 12px; }
+  .ml-auto { margin-left: auto; }
+  .text-muted { color: var(--text-muted); font-size: 12px; }
+  .mt-4 { margin-top: 4px; }
+  .mt-8 { margin-top: 8px; }
+  .fw-600 { font-weight: 600; }
+
+  /* ─── SCROLLBAR ─── */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+</style>
+</head>
+<body>
+
+<!-- ══════════════ TOP BAR ══════════════ -->
+<div class="topbar">
+  <div class="topbar-brand">
+    <div class="brand-avatar">RI</div>
+    <span class="brand-name">Rezolut Infotech</span>
+    <span class="brand-chevron">››</span>
+  </div>
+  <div class="topbar-back" onclick="showScreen('feed-screen')">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+    Back
+  </div>
+</div>
+
+<div class="app" style="margin-top:48px; height: calc(100vh - 48px);">
+
+<!-- ══════════════ LEFT SIDEBAR ══════════════ -->
+<div class="sidebar" style="position:relative; margin-top:0; height:100%;">
+  <div class="sidebar-inner">
+    <div class="sidebar-item" onclick="showScreen('feed-screen')">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      Feed
+    </div>
+    <div class="sidebar-item" onclick="showScreen('feed-screen')">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Build
+      <span class="sidebar-item-dots">···</span>
+    </div>
+    <hr class="sidebar-divider">
+
+    <!-- RZ Team group -->
+    <div class="sidebar-group">
+      <div class="sidebar-group-header open" onclick="toggleGroup(this)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+        RZ Team
+        <svg class="chev" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="sidebar-group-children">
+        <div class="sidebar-child" onclick="showScreen('feed-screen')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+          Article
+        </div>
+        <div class="sidebar-child" onclick="showScreen('feed-screen')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>
+          Course
+        </div>
+        <!-- FORUM — new nav item -->
+        <div class="sidebar-child active" id="forum-nav-item" onclick="showScreen('feed-screen')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+          Forum
+        </div>
+      </div>
+    </div>
+    <hr class="sidebar-divider">
+
+    <!-- AI Mastery group -->
+    <div class="sidebar-group">
+      <div class="sidebar-group-header" onclick="toggleGroup(this)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+        AI Mastery
+        <svg class="chev" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="sidebar-group-children" style="display:none">
+        <div class="sidebar-child">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+          Article
+        </div>
+        <div class="sidebar-child">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>
+          Course
+        </div>
+        <div class="sidebar-child">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+          Forum
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sidebar-footer">
+    <div class="sidebar-settings">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+      Settings
+    </div>
+    <div class="sidebar-user">
+      <div class="user-avatar">KT</div>
+      <div>
+        <div class="user-name">Kashish Tanna</div>
+      </div>
+      <span class="user-dots ml-auto">···</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ MAIN ══════════════ -->
+<div class="main">
+
+<!-- ── SCREEN 1: FORUM FEED ── -->
+<div class="screen active" id="feed-screen">
+  <div class="content-header">
+    <div class="flex items-center gap-12">
+      <span class="content-header-title">Forum</span>
+      <span class="badge badge-blue">RZ Team</span>
+    </div>
+    <div class="content-header-right">
+      <div class="btn btn-sm" onclick="showScreen('search-screen')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+        Search
+      </div>
+      <div class="btn btn-sm" onclick="showScreen('mod-screen')" title="Moderation panel">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Moderate
+      </div>
+      <div class="btn btn-primary btn-sm" onclick="showScreen('compose-screen')">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        New post
+      </div>
+    </div>
+  </div>
+
+  <div class="forum-body">
+    <!-- Center feed -->
+    <div class="forum-center">
+      <div class="forum-inner">
+        <div class="forum-toolbar">
+          <div class="toolbar-row">
+            <div class="sort-tabs" role="tablist" aria-label="Sort feed">
+              <button class="sort-tab active" onclick="switchSortTab(this,'Hot')">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.174-.105-.949-.199-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738a.36.36 0 01.083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.632-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24.009 12.017 24.009c6.624 0 11.99-5.367 11.99-11.988C24.007 5.367 18.641 0 12.017 0z"/></svg>
+                Hot
+              </button>
+              <button class="sort-tab" onclick="switchSortTab(this,'New')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                New
+              </button>
+              <button class="sort-tab" onclick="switchSortTab(this,'Top')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+                Top
+              </button>
+              <button class="sort-tab" onclick="switchSortTab(this,'My posts')">My posts</button>
+              <button class="sort-tab" onclick="switchSortTab(this,'Saved')">Saved</button>
+            </div>
+            <div class="feed-tabs" id="feed-tabs">
+              <button class="feed-tab active" onclick="switchFeedPeriod(this,'Today')">Today</button>
+              <button class="feed-tab" onclick="switchFeedPeriod(this,'This week')">This week</button>
+              <button class="feed-tab" onclick="switchFeedPeriod(this,'All time')">All time</button>
+            </div>
+          </div>
+
+          <div class="tag-pills" id="tag-pills">
+            <div class="tag-pill active" onclick="selectTagPill(this)">All</div>
+            <div class="tag-pill" onclick="selectTagPill(this)">
+              <span class="pill-dot" style="background:var(--blue)"></span>
+              Launches <span class="pill-count">142</span>
+            </div>
+            <div class="tag-pill" onclick="selectTagPill(this)">
+              <span class="pill-dot" style="background:var(--teal)"></span>
+              Feedback <span class="pill-count">98</span>
+            </div>
+            <div class="tag-pill" onclick="selectTagPill(this)">
+              <span class="pill-dot" style="background:var(--purple)"></span>
+              Tools <span class="pill-count">74</span>
+            </div>
+            <div class="tag-pill" onclick="selectTagPill(this)">
+              <span class="pill-dot" style="background:var(--amber)"></span>
+              Questions <span class="pill-count">61</span>
+            </div>
+            <div class="tag-pill" onclick="selectTagPill(this)">
+              <span class="pill-dot" style="background:var(--red)"></span>
+              Hiring <span class="pill-count">29</span>
+            </div>
+            <div class="tag-pill" onclick="selectTagPill(this)">
+              <span class="pill-dot" style="background:var(--pink)"></span>
+              Announcements <span class="pill-count">17</span>
+            </div>
+          </div>
+        </div>
+
+      <!-- Post 1 – pinned -->
+      <div class="post-card">
+        <div class="vote-col">
+          <div class="vote-btn upvoted" onclick="toggleVote(this)">▲</div>
+          <div class="vote-count upvoted" id="vc1">47</div>
+          <div class="vote-btn" onclick="toggleDownvote(this)">▼</div>
+        </div>
+        <div class="post-main">
+          <div class="post-top">
+            <span class="pinned-badge">📌 Pinned</span>
+            <span class="badge badge-blue">Launches</span>
+          </div>
+          <div class="post-title" onclick="showScreen('thread-screen')">Just launched: Quillr — an AI writing sidekick that lives in your menubar</div>
+          <div class="post-meta">
+            <div class="avatar-xs" style="background:#dbeafe;color:#1d4ed8">PR</div>
+            <span class="meta-text">priya_r</span>
+            <span class="meta-dot">·</span>
+            <span class="meta-text">RZ Team</span>
+            <span class="meta-dot">·</span>
+            <span class="meta-text">3h ago</span>
+            <span class="meta-dot">·</span>
+            <span class="meta-text">24 replies</span>
+          </div>
+          <div class="post-excerpt">After 6 months of building in public, Quillr is live on Product Hunt today. It's a native menubar app for macOS that helps you rephrase, expand, or summarise content on demand — no copy-paste, no tab switching. Would love your feedback on the onboarding flow...</div>
+          <div class="post-actions">
+            <div class="action-btn" onclick="showScreen('thread-screen')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+              24 replies
+            </div>
+            <div class="action-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8M16 6l-4-4-4 4M12 2v13"/></svg>
+              Share
+            </div>
+            <div class="action-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
+              Save
+            </div>
+            <div class="action-btn action-btn-spacer">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Post 2 -->
+      <div class="post-card">
+        <div class="vote-col">
+          <div class="vote-btn" onclick="toggleVote(this)">▲</div>
+          <div class="vote-count" id="vc2">31</div>
+          <div class="vote-btn" onclick="toggleDownvote(this)">▼</div>
+        </div>
+        <div class="post-main">
+          <div class="post-top">
+            <span class="badge badge-teal">Feedback</span>
+          </div>
+          <div class="post-title">How do you handle pricing conversations with enterprise leads who ghost after the demo?</div>
+          <div class="post-meta">
+            <div class="avatar-xs" style="background:#d1fae5;color:#047857">MK</div>
+            <span class="meta-text">m_khan</span>
+            <span class="meta-dot">·</span>
+            <span class="meta-text">RZ Team</span>
+            <span class="meta-dot">·</span>
+            <span class="meta-text">5h ago</span>
+            <span class="meta-dot">·</span>
+            <span class="meta-text">18 replies</span>
+          </div>
+          <div class="post-excerpt">Had three promising demos last week, all went quiet. Our pricing is $400/mo for teams. Wondering if the pricing page is scaring them off or if it's a follow-up timing issue...</div>
+          <div class="post-actions">
+            <div class="action-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+              18 replies
+            </div>
+            <div class="action-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8M16 6l-4-4-4 4M12 2v13"/></svg>
+              Share
+            </div>
+            <div class="action-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
+              Save
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Post 3 -->
+      <div class="post-card">
+        <div class="vote-col">
+          <div class="vote-btn" onclick="toggleVote(this)">▲</div>
+          <div class="vote-count" id="vc3">19</div>
+          <div class="vote-btn" onclick="toggleDownvote(this)">▼</div>
+        </div>
+        <div class="post-main">
+          <div class="post-top">
+            <span class="badge badge-purple">Tools</span>
+          </div>
+          <div class="post-title">My 2026 indie stack: Supabase + Vercel + Resend + Stripe — and why I dropped Firebase</div>
+          <div class="post-meta">
+            <div class="avatar-xs" style="background:#ede9fe;color:#6d28d9">TL</div>
+            <span class="meta-text">tom_l</span>
+            <span class="meta-dot">·</span>
+            <span class="meta-text">RZ Team</span>
+            <span class="meta-dot">·</span>
+            <span class="meta-text">9h ago</span>
+            <span class="meta-dot">·</span>
+            <span class="meta-text">11 replies</span>
+          </div>
+          <div class="post-excerpt">Long post incoming. I've been building solo for 3 years and have tried basically everything. Here's what I've settled on and why each piece is non-negotiable for a one-person team...</div>
+          <div class="post-actions">
+            <div class="action-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+              11 replies
+            </div>
+            <div class="action-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8M16 6l-4-4-4 4M12 2v13"/></svg>
+              Share
+            </div>
+            <div class="action-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
+              Save
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Post 4 -->
+      <div class="post-card">
+        <div class="vote-col">
+          <div class="vote-btn" onclick="toggleVote(this)">▲</div>
+          <div class="vote-count" id="vc4">8</div>
+          <div class="vote-btn" onclick="toggleDownvote(this)">▼</div>
+        </div>
+        <div class="post-main">
+          <div class="post-top">
+            <span class="badge badge-amber">Questions</span>
+          </div>
+          <div class="post-title">Anyone using Clerk vs Auth0 for B2B SaaS in 2026? Looking for real-world opinions</div>
+          <div class="post-meta">
+            <div class="avatar-xs" style="background:#fef3c7;color:#b45309">SV</div>
+            <span class="meta-text">sara_v</span>
+            <span class="meta-dot">·</span>
+            <span class="meta-text">RZ Team</span>
+            <span class="meta-dot">·</span>
+            <span class="meta-text">14h ago</span>
+            <span class="meta-dot">·</span>
+            <span class="meta-text">7 replies</span>
+          </div>
+          <div class="post-actions">
+            <div class="action-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+              7 replies
+            </div>
+            <div class="action-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8M16 6l-4-4-4 4M12 2v13"/></svg>
+              Share
+            </div>
+            <div class="action-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
+              Save
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Post 5 -->
+      <div class="post-card">
+        <div class="vote-col">
+          <div class="vote-btn" onclick="toggleVote(this)">▲</div>
+          <div class="vote-count" id="vc5">5</div>
+          <div class="vote-btn" onclick="toggleDownvote(this)">▼</div>
+        </div>
+        <div class="post-main">
+          <div class="post-top">
+            <span class="badge badge-pink">Announcements</span>
+          </div>
+          <div class="post-title">We're hosting a live AMA with three YC S24 founders next Friday — submit your questions</div>
+          <div class="post-meta">
+            <div class="avatar-xs" style="background:#fce7f3;color:#be185d">JD</div>
+            <span class="meta-text">jane_d · MODERATOR</span>
+            <span class="meta-dot">·</span>
+            <span class="meta-text">22h ago</span>
+            <span class="meta-dot">·</span>
+            <span class="meta-text">3 replies</span>
+          </div>
+          <div class="post-actions">
+            <div class="action-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+              3 replies
+            </div>
+            <div class="action-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8M16 6l-4-4-4 4M12 2v13"/></svg>
+              Share
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="text-align:center; padding: 20px 0; color: var(--text-muted); font-size:13px">You're all caught up.</div>
+      </div><!-- /forum-inner -->
+    </div>
+  </div>
+</div>
+
+<!-- ── SCREEN 2: THREAD VIEW ── -->
+<div class="screen" id="thread-screen">
+  <div class="content-header">
+    <div class="flex items-center gap-12">
+      <div class="btn btn-sm" onclick="showScreen('feed-screen')">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+        Back to Feed
+      </div>
+      <span class="text-muted">Forum / Thread</span>
+    </div>
+    <div class="content-header-right">
+      <div class="btn btn-sm">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8M16 6l-4-4-4 4M12 2v13"/></svg>
+        Share
+      </div>
+      <div class="btn btn-sm">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
+        Save
+      </div>
+    </div>
+  </div>
+
+  <div class="locked-notice">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+    This thread is locked. New replies are disabled.
+  </div>
+
+  <div style="overflow-y:auto; flex:1;">
+  <div class="thread-container">
+    <!-- OP -->
+    <div class="thread-op">
+      <div class="thread-op-meta">
+        <span class="badge badge-blue">Launches</span>
+        <span class="pinned-badge">📌 Pinned</span>
+        <span class="locked-badge">🔒 Locked</span>
+      </div>
+      <div class="thread-op-title">Just launched: Quillr — an AI writing sidekick that lives in your menubar</div>
+      <div class="post-meta" style="margin-bottom:14px">
+        <div class="avatar-xs" style="background:#dbeafe;color:#1d4ed8;width:26px;height:26px;font-size:10px">PR</div>
+        <span style="font-size:13px;font-weight:600">priya_r</span>
+        <span class="op-badge">OP</span>
+        <span class="meta-dot">·</span>
+        <span class="meta-text">RZ Team</span>
+        <span class="meta-dot">·</span>
+        <span class="meta-text">3h ago · edited 2h ago</span>
+      </div>
+      <div class="thread-body">
+        <p>After 6 months of building in public, <strong>Quillr</strong> is live on Product Hunt today. It's a native menubar app for macOS that plugs into any text field and helps you rephrase, expand, or summarise content on demand — no copy-paste, no tab switching.</p>
+        <p>Would love feedback from this community especially on:</p>
+        <p>1. Onboarding flow — is 3 steps too many for a menubar app?<br>2. Pricing — $9/mo solo, $19/mo team. Does it feel right?<br>3. The label "Rephrase" — should it be "Rewrite"?</p>
+        <p>PH link in comments. Thanks for all the support so far! 🚀</p>
+      </div>
+      <div class="thread-actions">
+        <div class="vote-big">
+          <div class="vote-big-btn upvoted">▲ Upvote</div>
+          <div style="font-size:13px;font-weight:600;padding:0 4px;color:var(--blue)">47</div>
+        </div>
+        <div class="action-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8M16 6l-4-4-4 4M12 2v13"/></svg>
+          Share
+        </div>
+        <div class="action-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
+          Save
+        </div>
+        <div class="action-btn ml-auto">···</div>
+      </div>
+    </div>
+
+    <!-- Replies section -->
+    <div class="replies-header">
+      <span class="replies-count">24 replies</span>
+      <select class="sort-select">
+        <option>Sort by: Hot</option>
+        <option>Sort by: New</option>
+        <option>Sort by: Top</option>
+      </select>
+    </div>
+
+    <!-- Reply 1 -->
+    <div class="reply-card">
+      <div class="reply-avatar" style="background:#d1fae5;color:#047857">MK</div>
+      <div class="reply-main">
+        <div class="reply-meta">
+          <span class="reply-author">m_khan</span>
+          <span class="badge badge-gray" style="font-size:10px;padding:1px 5px">Member</span>
+          <span class="meta-dot">·</span>
+          <span class="meta-text">2h ago</span>
+        </div>
+        <div class="reply-body">Congrats on the launch! On "Rephrase" vs "Rewrite" — I'd go with <strong>Rewrite</strong>, it implies more agency. Also quick q: does it work in VS Code terminals or just GUI text fields? @priya_r</div>
+        <div class="reply-actions">
+          <div class="action-btn">▲ 12</div>
+          <div class="action-btn">↩ Reply</div>
+          <div class="action-btn">···</div>
+        </div>
+
+        <!-- Nested reply – level 2 -->
+        <div class="reply-nested">
+          <div class="reply-card" style="border:none;padding:10px 0 0;">
+            <div class="reply-avatar" style="background:#dbeafe;color:#1d4ed8;width:26px;height:26px;font-size:10px">PR</div>
+            <div class="reply-main">
+              <div class="reply-meta">
+                <span class="reply-author">priya_r</span>
+                <span class="op-badge">OP</span>
+                <span class="meta-dot">·</span>
+                <span class="meta-text">1h ago</span>
+              </div>
+              <div class="reply-body">Good call — changing to "Rewrite" in the next build! On VS Code: GUI text fields only for now, native accessibility API doesn't expose terminal input yet. On the roadmap though 🙌</div>
+              <div class="reply-actions">
+                <div class="action-btn">▲ 5</div>
+                <div class="action-btn">↩ Reply</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Reply 2 – hidden by mod -->
+    <div class="reply-card">
+      <div class="reply-avatar" style="background:#fee2e2;color:#dc2626">XX</div>
+      <div class="reply-main hidden-reply">
+        <div class="hidden-notice">Hidden by moderator</div>
+        <div class="reply-meta">
+          <span class="reply-author">anon_user</span>
+          <span class="meta-dot">·</span>
+          <span class="meta-text">1h ago</span>
+        </div>
+        <div class="reply-body">[This content has been hidden. Original visible to author only.]</div>
+      </div>
+    </div>
+
+    <!-- Reply 3 -->
+    <div class="reply-card">
+      <div class="reply-avatar" style="background:#ede9fe;color:#6d28d9">TL</div>
+      <div class="reply-main">
+        <div class="reply-meta">
+          <span class="reply-author">tom_l</span>
+          <span class="meta-dot">·</span>
+          <span class="meta-text">45 min ago</span>
+        </div>
+        <div class="reply-body">Pricing feels right for a solo indie. $9/mo is impulse-buy territory. Pro tip: add an annual option at $79 — instant 30% revenue boost and better retention signal from day 1.</div>
+        <div class="reply-actions">
+          <div class="action-btn vote-big-btn upvoted" style="font-size:12px;padding:3px 10px">▲ 6</div>
+          <div class="action-btn">↩ Reply</div>
+          <div class="action-btn">···</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Disabled reply box -->
+    <div class="reply-compose" style="opacity:.5;pointer-events:none">
+      <div style="font-size:13px;color:var(--text-muted);margin-bottom:10px">Thread is locked — new replies are disabled.</div>
+      <textarea disabled placeholder="Write a reply in Markdown..."></textarea>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- ── SCREEN 3: COMPOSE ── -->
+<div class="screen" id="compose-screen">
+  <div class="content-header">
+    <div class="flex items-center gap-12">
+      <span style="font-size:15px;font-weight:600">New post — RZ Team Forum</span>
+    </div>
+  </div>
+  <div style="overflow-y:auto;flex:1">
+  <div class="compose-wrap">
+    <div class="compose-card">
+      <div class="form-group">
+        <label class="form-label">Title <span class="form-req">*</span></label>
+        <input class="form-input" type="text" placeholder="What's your post about? Keep it specific." value="How I got my first 50 paying customers without ads">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Tag <span class="form-req">*</span> <span class="form-note">· required · pick one</span></label>
+        <div class="tag-picker">
+          <div class="tag-chip selected" onclick="selectTag(this)">Launches</div>
+          <div class="tag-chip" onclick="selectTag(this)">Feedback</div>
+          <div class="tag-chip" onclick="selectTag(this)">Tools</div>
+          <div class="tag-chip" onclick="selectTag(this)">Questions</div>
+          <div class="tag-chip" onclick="selectTag(this)">Hiring</div>
+          <div class="tag-chip" onclick="selectTag(this)">Announcements</div>
+          <div class="tag-chip" onclick="selectTag(this)">Show &amp; tell</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Body <span class="form-note">· Markdown only · no WYSIWYG</span></label>
+        <div class="md-toolbar">
+          <button class="md-btn"><strong>B</strong></button>
+          <button class="md-btn"><em>I</em></button>
+          <button class="md-btn">H1</button>
+          <button class="md-btn">H2</button>
+          <button class="md-btn">──</button>
+          <button class="md-btn">` `</button>
+          <button class="md-btn">```</button>
+          <button class="md-btn">[ ]</button>
+          <button class="md-btn">@</button>
+        </div>
+        <textarea class="form-textarea" id="compose-body" oninput="updateCharCount()">## What worked (and what didn't)
+
+I spent the first 3 months chasing press coverage — zero results. Then I switched to showing up in communities with genuinely useful answers. That's where everything changed.
+
+**The five channels that actually worked:**
+
+1. Commenting on relevant threads in communities like this one
+2. Writing a teardown of a competitor's pricing page
+3. Cold DMs with a specific, personalised observation
+4. A Reddit post that hit the front page (luck, but reproducible luck)
+5. Partnering with a solo newsletter writer with 3k subscribers</textarea>
+      </div>
+
+      <div class="compose-footer">
+        <div>
+          <div class="compose-note" id="char-count">Body: 512 chars · Title: 56 / 120 chars</div>
+          <div class="compose-note mt-4">You have a 15-minute edit window after publishing. Inline images only — no file uploads.</div>
+        </div>
+        <div class="flex gap-8">
+          <div class="btn btn-sm">Save as Draft</div>
+          <div class="btn btn-primary btn-sm" onclick="showScreen('feed-screen')">Publish post →</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- ── SCREEN 4: SEARCH ── -->
+<div class="screen" id="search-screen">
+  <div class="content-header">
+    <div class="flex items-center gap-12">
+      <div class="btn btn-sm" onclick="showScreen('feed-screen')">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+        Back
+      </div>
+      <span class="content-header-title">Search — RZ Team Forum</span>
+    </div>
+  </div>
+  <div style="overflow-y:auto;flex:1">
+  <div class="search-wrap">
+    <div class="search-bar-wrap">
+      <input class="search-input-big" type="text" value="pricing enterprise ghosting" id="search-input">
+      <div class="btn btn-primary">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+        Search
+      </div>
+    </div>
+    <div class="search-filters">
+      <span class="search-filter-label">Filter by tag:</span>
+      <div class="tag-chip selected" style="font-size:12px;padding:4px 10px" onclick="selectTag(this)">All</div>
+      <div class="tag-chip" style="font-size:12px;padding:4px 10px" onclick="selectTag(this)">Feedback</div>
+      <div class="tag-chip" style="font-size:12px;padding:4px 10px" onclick="selectTag(this)">Questions</div>
+      <div class="tag-chip" style="font-size:12px;padding:4px 10px" onclick="selectTag(this)">Tools</div>
+      <div class="tag-chip" style="font-size:12px;padding:4px 10px" onclick="selectTag(this)">Launches</div>
+    </div>
+    <div style="font-size:12.5px;color:var(--text-secondary);margin-bottom:12px">3 results for <strong>"pricing enterprise ghosting"</strong> · scoped to RZ Team only</div>
+
+    <div class="search-results-card">
+      <div class="search-result" onclick="showScreen('thread-screen')">
+        <div class="flex items-center gap-8" style="margin-bottom:6px">
+          <span class="badge badge-teal">Feedback</span>
+          <span class="meta-text">m_khan · 5h ago · 18 replies</span>
+        </div>
+        <div class="search-result-title">How do you handle <span class="highlight">pricing</span> conversations with <span class="highlight">enterprise</span> leads who <span class="highlight">ghost</span> after the demo?</div>
+        <div class="search-result-excerpt">Had three promising demos last week, all went quiet. Our <span class="highlight">pricing</span> is $400/mo for teams — wondering if the page is scaring them off...</div>
+        <div class="flex items-center gap-8"><span class="meta-text">▲ 31 upvotes</span><span class="meta-dot">·</span><span class="meta-text">18 replies</span></div>
+      </div>
+      <div class="search-result">
+        <div class="flex items-center gap-8" style="margin-bottom:6px">
+          <span class="badge badge-amber">Questions</span>
+          <span class="meta-text">alex_d · 2d ago · 5 replies</span>
+        </div>
+        <div class="search-result-title">Anyone moved from usage-based to seat-based <span class="highlight">pricing</span> for an <span class="highlight">enterprise</span> tier?</div>
+        <div class="search-result-excerpt">We're seeing <span class="highlight">enterprise</span> prospects balk at unpredictable bills. Considering a flat seat model instead...</div>
+        <div class="flex items-center gap-8"><span class="meta-text">▲ 14 upvotes</span><span class="meta-dot">·</span><span class="meta-text">5 replies</span></div>
+      </div>
+      <div class="search-result">
+        <div class="flex items-center gap-8" style="margin-bottom:6px">
+          <span class="badge badge-blue">Launches</span>
+          <span class="meta-text">yuki_m · 1w ago · 9 replies</span>
+        </div>
+        <div class="search-result-title">Launched our <span class="highlight">enterprise</span> plan — here's our <span class="highlight">pricing</span> page and the reasoning behind it</div>
+        <div class="search-result-excerpt">After months of <span class="highlight">ghosting</span> from large accounts, we redesigned the page with fewer choices and a clear "Talk to us" CTA...</div>
+        <div class="flex items-center gap-8"><span class="meta-text">▲ 22 upvotes</span><span class="meta-dot">·</span><span class="meta-text">9 replies</span></div>
+      </div>
+    </div>
+    <div class="search-footer">Full-text search via Postgres tsvector + GIN index · Results from RZ Team only · No cross-community leakage</div>
+  </div>
+  </div>
+</div>
+
+<!-- ── SCREEN 5: MODERATION ── -->
+<div class="screen" id="mod-screen">
+  <div class="content-header">
+    <div class="flex items-center gap-12">
+      <span class="content-header-title">Moderation</span>
+      <span class="badge badge-purple">MODERATOR</span>
+    </div>
+    <div class="content-header-right">
+      <div class="user-avatar" style="background:#fef3c7;color:#b45309">KT</div>
+    </div>
+  </div>
+
+  <div class="mod-wrap">
+    <div class="mod-sidebar">
+      <div class="fsb-label">Queue</div>
+      <div class="fsb-item active">
+        All items
+        <span class="fsb-count" style="background:#fee2e2;color:#dc2626">5</span>
+      </div>
+      <div class="fsb-item">
+        Hidden replies
+        <span class="fsb-count" style="background:#fee2e2;color:#dc2626">2</span>
+      </div>
+      <div class="fsb-item">
+        Pinned posts
+        <span class="fsb-count" style="background:#fef3c7;color:#b45309">1</span>
+      </div>
+      <div class="fsb-item">
+        Locked threads
+        <span class="fsb-count" style="background:#fef3c7;color:#b45309">1</span>
+      </div>
+      <div class="fsb-item">
+        Tag overrides
+        <span class="fsb-count">1</span>
+      </div>
+      <div class="fsb-divider"></div>
+      <div class="fsb-label">Tools</div>
+      <div class="fsb-item">Manage tags</div>
+      <div class="fsb-item">Member roles</div>
+      <div class="fsb-item">Audit log</div>
+    </div>
+
+    <div class="mod-main">
+      <div style="font-size:14px;font-weight:600;margin-bottom:14px">Active moderation items <span style="font-size:12px;color:var(--text-muted);font-weight:400;margin-left:4px">5 items</span></div>
+
+      <!-- Hidden replies -->
+      <div style="font-size:12px;font-weight:600;color:var(--text-secondary);margin-bottom:8px;text-transform:uppercase;letter-spacing:.04em">Hidden replies</div>
+      <div class="mod-card">
+        <div class="mod-row">
+          <div class="mod-indicator" style="background:#ef4444"></div>
+          <div class="mod-info">
+            <div class="mod-title">Reply by anon_user — "This is just a GPT wrapper, nothing special"</div>
+            <div class="mod-by">Hidden by you · 1h ago · on "Just launched: Quillr..."</div>
+          </div>
+          <div class="mod-btns">
+            <div class="btn btn-xs">Restore</div>
+            <div class="btn btn-xs btn-danger">Delete</div>
+          </div>
+        </div>
+        <div class="mod-row">
+          <div class="mod-indicator" style="background:#ef4444"></div>
+          <div class="mod-info">
+            <div class="mod-title">Reply by spambot_22 — "🔥 Make $500/day with this method..."</div>
+            <div class="mod-by">Hidden by you · 3h ago · on "My 2026 indie stack..."</div>
+          </div>
+          <div class="mod-btns">
+            <div class="btn btn-xs">Restore</div>
+            <div class="btn btn-xs btn-danger">Delete</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pinned & locked -->
+      <div style="font-size:12px;font-weight:600;color:var(--text-secondary);margin-bottom:8px;margin-top:16px;text-transform:uppercase;letter-spacing:.04em">Pinned & locked</div>
+      <div class="mod-card">
+        <div class="mod-row">
+          <div class="mod-indicator" style="background:#f59e0b"></div>
+          <div class="mod-info">
+            <div class="mod-title">📌 Just launched: Quillr — an AI writing sidekick...</div>
+            <div class="mod-by">Pinned by you · 3h ago · 24 replies</div>
+          </div>
+          <div class="mod-btns">
+            <div class="btn btn-xs">Unpin</div>
+          </div>
+        </div>
+        <div class="mod-row">
+          <div class="mod-indicator" style="background:#ef4444"></div>
+          <div class="mod-info">
+            <div class="mod-title">🔒 Just launched: Quillr — thread locked</div>
+            <div class="mod-by">Locked by you · 1h ago · replies disabled</div>
+          </div>
+          <div class="mod-btns">
+            <div class="btn btn-xs">Unlock</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tag overrides -->
+      <div style="font-size:12px;font-weight:600;color:var(--text-secondary);margin-bottom:8px;margin-top:16px;text-transform:uppercase;letter-spacing:.04em">Tag overrides</div>
+      <div class="mod-card">
+        <div class="mod-row">
+          <div class="mod-indicator" style="background:#10b981"></div>
+          <div class="mod-info">
+            <div class="mod-title">Tag changed: "Announcements" → "Launches" on post by new_member_22</div>
+            <div class="mod-by">Changed by mod_alex · 6h ago</div>
+          </div>
+          <div class="mod-btns">
+            <div class="btn btn-xs">Revert</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick actions -->
+      <div class="quick-actions">
+        <div class="quick-title">Quick actions</div>
+        <div class="quick-grid">
+          <div class="quick-btn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            Pin a post
+          </div>
+          <div class="quick-btn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+            Lock a thread
+          </div>
+          <div class="quick-btn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24M1 1l22 22"/></svg>
+            Hide a reply
+          </div>
+          <div class="quick-btn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+            Remove tag
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /main -->
+</div><!-- /app -->
+
+<script>
+  function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    // update sidebar active child
+    document.querySelectorAll('.sidebar-child').forEach(c => c.classList.remove('active'));
+    if (id === 'feed-screen' || id === 'thread-screen' || id === 'compose-screen' || id === 'search-screen' || id === 'mod-screen') {
+      document.getElementById('forum-nav-item').classList.add('active');
+    }
+    // Moderation opens in fullscreen view (no sidebar)
+    document.body.classList.toggle('fullscreen-view', id === 'mod-screen');
+  }
+
+  function toggleGroup(header) {
+    header.classList.toggle('open');
+    const children = header.nextElementSibling;
+    children.style.display = children.style.display === 'none' ? '' : 'none';
+  }
+
+  function selectTag(chip) {
+    const parent = chip.parentElement;
+    parent.querySelectorAll('.tag-chip').forEach(c => c.classList.remove('selected'));
+    chip.classList.add('selected');
+  }
+
+  function toggleVote(btn) {
+    const col = btn.closest('.vote-col');
+    const upBtn = col.querySelector('.vote-btn:first-child');
+    const countEl = col.querySelector('.vote-count');
+    let count = parseInt(countEl.textContent);
+    if (upBtn.classList.contains('upvoted')) {
+      upBtn.classList.remove('upvoted');
+      countEl.classList.remove('upvoted');
+      countEl.textContent = count - 1;
+    } else {
+      upBtn.classList.add('upvoted');
+      countEl.classList.add('upvoted');
+      countEl.textContent = count + 1;
+    }
+  }
+
+  function toggleDownvote(btn) {
+    const col = btn.closest('.vote-col');
+    const upBtn = col.querySelector('.vote-btn:first-child');
+    const countEl = col.querySelector('.vote-count');
+    if (upBtn.classList.contains('upvoted')) {
+      upBtn.classList.remove('upvoted');
+      countEl.classList.remove('upvoted');
+      countEl.textContent = parseInt(countEl.textContent) - 1;
+    }
+  }
+
+  function switchSortTab(el, name) {
+    const group = el.closest('.sort-tabs');
+    group.querySelectorAll('.sort-tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+  }
+
+  function switchFeedPeriod(el, period) {
+    const group = el.closest('.feed-tabs');
+    group.querySelectorAll('.feed-tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+  }
+
+  function selectTagPill(el) {
+    const group = el.closest('.tag-pills');
+    group.querySelectorAll('.tag-pill').forEach(p => p.classList.remove('active'));
+    el.classList.add('active');
+  }
+
+  function updateCharCount() {
+    const body = document.getElementById('compose-body');
+    document.getElementById('char-count').textContent = 'Body: ' + body.value.length + ' chars · Title: 56 / 120 chars';
+  }
+</script>
+</body>
+</html>

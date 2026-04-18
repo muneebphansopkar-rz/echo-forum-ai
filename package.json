@@ -1,13 +1,24 @@
 {
-  "name": "launchpad-boilerplate",
-  "version": "1.0.0",
+  "name": "skep-forum",
+  "version": "0.1.0",
   "private": true,
-  "description": "Claude Code-powered project boilerplate. Stack-agnostic — configure via project/TECH-STACK.md.",
+  "description": "SKEP Forum — threaded async discussions for SKEP communities.",
+  "packageManager": "pnpm@9.12.0",
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "setup": "make setup",
-    "dev": "make dev",
-    "test": "make test",
-    "build": "make build",
-    "lint": "make lint"
+    "dev": "pnpm --parallel --filter @skep/api --filter @skep/web dev",
+    "dev:api": "pnpm --filter @skep/api dev",
+    "dev:web": "pnpm --filter @skep/web dev",
+    "build": "pnpm --filter @skep/api --filter @skep/web build",
+    "test": "pnpm --filter @skep/api --filter @skep/web test",
+    "lint": "pnpm --filter @skep/api --filter @skep/web lint",
+    "typecheck": "pnpm --filter @skep/api --filter @skep/web typecheck"
+  },
+  "devDependencies": {
+    "prettier": "^3.3.3",
+    "typescript": "^5.5.4"
   }
 }

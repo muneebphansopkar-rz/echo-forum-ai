@@ -1,0 +1,28 @@
+# ─── Deps ───────────────────────────────────────────────────────────────────
+node_modules
+.pnpm-store
+
+# ─── Build output ───────────────────────────────────────────────────────────
+dist
+build
+.next
+out
+coverage
+*.tsbuildinfo
+
+# ─── Env ────────────────────────────────────────────────────────────────────
+.env
+.env.local
+.env.*.local
+
+# ─── Editor / OS ────────────────────────────────────────────────────────────
+.DS_Store
+.idea
+.vscode/*
+!.vscode/extensions.json
+*.log
+
+# ─── Logs (keep .gitkeep entries only) ─────────────────────────────────────
+logs/*
+!logs/.gitkeep
+!logs/README.md
